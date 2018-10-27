@@ -11,8 +11,13 @@ import Entrada from '@/views/Entrada.vue'
 import Cliente from '@/components/Cliente.vue'
 
 export default {
+  components: { Entrada, Cliente },
   name: 'App',
-  components: { Entrada, Cliente }
+  data() {
+    return {
+      titulo: 'Entradas'
+    }
+  }
 }
 </script>
 

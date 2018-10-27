@@ -4,6 +4,19 @@
   </div>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      nombres: 'Isaac',
+      apellidos: 'Newton',
+      edad: 24
+    }
+  }
+}
+</script>
+
+
 <style scoped>
 
 .seccion {
