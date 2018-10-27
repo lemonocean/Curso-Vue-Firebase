@@ -1,6 +1,11 @@
 <template>
   <div class="seccion">
-    <span>Isaac Newton</span>
+    <div class="atributo">
+      <span>{{ nombres }} {{ apellidos }}</span>
+    </div>
+    <div class="atributo">
+      <span>Edad: {{ edad }}</span>
+    </div>
   </div>
 </template>
 
@@ -26,6 +31,10 @@ export default {
   border-radius: 5px;
   margin: 10px;
   padding: 10px;
+}
+
+.atributo {
+  margin: 10px;
 }
 
 </style>
