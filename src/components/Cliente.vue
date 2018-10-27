@@ -1,7 +1,7 @@
 <template>
   <div class="seccion">
     <div class="atributo">
-      <span>{{ nombres }} {{ apellidos }}</span>
+      <span>{{ nombreCompleto }}</span>
     </div>
     <div class="atributo">
       <span>Edad: {{ edad }}</span>
@@ -15,7 +15,17 @@ export default {
     return {
       nombres: 'Isaac',
       apellidos: 'Newton',
-      edad: 24
+      fechaNacimiento: new Date(1994, 9, 27)
+    }
+  },
+  computed: {
+    nombreCompleto() {
+      return `${this.nombres} ${this.apellidos}`
+    },
+    edad() {
+      let fechaActual = new Date()
+      let diferencia = fechaActual - this.fechaNacimiento
+      return Math.floor(diferencia / (1000 * 60 * 60 * 24 * 365.25))
     }
   }
 }
