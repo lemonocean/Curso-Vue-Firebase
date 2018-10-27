@@ -23,8 +23,13 @@ export default {
       return `${this.nombres} ${this.apellidos}`
     },
     edad() {
+      return this.calcularEdad(this.fechaNacimiento)
+    }
+  },
+  methods: {
+    calcularEdad(fecha) {
       let fechaActual = new Date()
-      let diferencia = fechaActual - this.fechaNacimiento
+      let diferencia = fechaActual - fecha
       return Math.floor(diferencia / (1000 * 60 * 60 * 24 * 365.25))
     }
   }
