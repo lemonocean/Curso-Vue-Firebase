@@ -35,4 +35,22 @@ html {
   text-align: center;
 }
 
+a {
+  text-decoration: none;
+  color: #553f75;
+}
+
+button {
+  background-color: #553f75;
+  color: white;
+  font-size: 2.4rem;
+  font-weight: bold;
+  border-style: none;
+  border-radius: 5px;
+  padding: 3px 10px;
+  margin: 3px 5px;
+  min-width: 35px;  
+  cursor: pointer;
+}
+
 </style>
