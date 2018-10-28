@@ -1,6 +1,6 @@
 <template>
   <div class="anuncio">
-    <span>
+    <span v-once>
       {{ presentaciones[indice] }}
     </span>
   </div>
@@ -14,7 +14,7 @@ export default {
         'Hamilton - 20:30',
         'Frozen - 15:00',
         'Anastasia - 14:00',
-        'El Rey Leon - 22:00'
+        'El Rey León - 22:00'
       ],
       indice: 0
     }
