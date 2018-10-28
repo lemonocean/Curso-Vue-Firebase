@@ -4,6 +4,12 @@
       <span>{{ nombreCompleto }}</span>
     </div>
     <div class="atributo">
+      <img :src="fotoPerfil" alt="">
+    </div>
+    <div class="atributo">
+      <a :href="biografia" target="_blank">Biografía</a>
+    </div>
+    <div class="atributo">
       <span>Edad: {{ edad }}</span>
     </div>
   </div>
@@ -15,7 +21,9 @@ export default {
     return {
       nombres: 'Isaac',
       apellidos: 'Newton',
-      fechaNacimiento: new Date(1994, 9, 27)
+      fechaNacimiento: new Date(1994, 9, 27),
+      fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg',
+      biografia: 'https://es.wikipedia.org/wiki/Isaac_Newton'
     }
   },
   computed: {
@@ -50,6 +58,11 @@ export default {
 
 .atributo {
   margin: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: #553f75;
 }
 
 </style>
