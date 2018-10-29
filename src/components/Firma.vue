@@ -1,5 +1,5 @@
 <template>
-  <canvas @mousemove="dibujar" @mousedown="dibujando = true" ref="canFirma" class="firma" width="380" height="200"></canvas>
+  <canvas @mousemove="dibujar" @mousedown="dibujando = true" @mouseup="detener" ref="canFirma" class="firma" width="380" height="200"></canvas>
 </template>
 
 <script>
@@ -13,6 +13,11 @@ export default {
     }
   },
   methods: {
+    detener() {
+      this.dibujando = false
+      this.x0 = -1
+      this.y0 = -1
+    },
     dibujar(event) {
       if(!this.dibujando) { return }
 
