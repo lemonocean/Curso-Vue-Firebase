@@ -1,5 +1,5 @@
 <template>
-  <canvas @mousemove="dibujar" ref="canFirma" class="firma" width="380" height="200"></canvas>
+  <canvas @mousemove="dibujar" @mousedown="dibujando = true" ref="canFirma" class="firma" width="380" height="200"></canvas>
 </template>
 
 <script>
@@ -8,11 +8,13 @@ export default {
     return {
       ctx: null,
       x0: -1,
-      y0: -1
+      y0: -1,
+      dibujando: false
     }
   },
   methods: {
     dibujar(event) {
+      if(!this.dibujando) { return }
 
       if(this.x0 == -1 || this.y0 == -1) {
         this.x0 = event.offsetX
