@@ -1,8 +1,8 @@
 <template>
   <div>
     <anuncio />
-    <cliente />
-    <email />
+    <cliente :email="email" />
+    <email :emailRecibido="email" />
     <firma />
     <boletos />    
   </div>  
@@ -16,7 +16,12 @@ import Firma from '@/components/Firma.vue'
 import Email from '@/components/Email.vue'
 
 export default {
-  components: { Cliente, Anuncio, Boletos, Firma, Email }
+  components: { Cliente, Anuncio, Boletos, Firma, Email },
+  data() {
+    return {
+      email: 'newton@email.com'
+    }
+  }
 }
 </script>
 

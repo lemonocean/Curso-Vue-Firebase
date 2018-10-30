@@ -3,26 +3,24 @@
     <div class="atributo">
       <input v-model="email" @keyup.enter="actualizarEmail" type="text">
     </div>
-    <div class="atributo email">
-      <span>
-        Email: {{ emailEnviado }}
-      </span>
-    </div>
   </div>
 </template>
 
 <script>
 export default {
+  props: ['emailRecibido'],
   data() {
     return {
-      email: '',
-      emailEnviado: ''
+      email: ''
     }
   },
   methods: {
     actualizarEmail(event) {
-      this.emailEnviado = this.email
+      
     }
+  },
+  created() {
+    this.email = this.emailRecibido
   }
 }
 </script>
