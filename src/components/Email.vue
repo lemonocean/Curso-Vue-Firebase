@@ -1,11 +1,11 @@
 <template>
   <div class="seccion">
     <div class="atributo">
-      <input @keyup.enter="actualizarEmail" type="text">
+      <input v-model="email" @keyup.enter="actualizarEmail" type="text">
     </div>
     <div class="atributo email">
       <span>
-        Email: {{ email }}
+        Email: {{ emailEnviado }}
       </span>
     </div>
   </div>
@@ -15,12 +15,13 @@
 export default {
   data() {
     return {
-      email: ''
+      email: '',
+      emailEnviado: ''
     }
   },
   methods: {
     actualizarEmail(event) {
-      this.email = event.target.value
+      this.emailEnviado = this.email
     }
   }
 }
