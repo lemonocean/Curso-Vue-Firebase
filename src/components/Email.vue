@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     actualizarEmail(event) {
-      
+      this.$emit('onCambioEmail', this.email)
     }
   },
   created() {

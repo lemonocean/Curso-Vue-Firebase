@@ -44,6 +44,9 @@ export default {
       let diferencia = fechaActual - fecha
       return Math.floor(diferencia / (1000 * 60 * 60 * 24 * 365.25))
     }
+  },
+  created() {
+    this.$emit('onCambioEmail', 'newton@email.com')
   }
 }
 </script>
