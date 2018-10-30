@@ -3,8 +3,8 @@
     <anuncio />
     <cliente />
     <email />
-    <boletos />
     <firma />
+    <boletos />    
   </div>  
 </template>
 

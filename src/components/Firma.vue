@@ -1,5 +1,15 @@
 <template>
-  <canvas @mousemove="dibujar" @mousedown="dibujando = true" @mouseup="detener" ref="canFirma" class="firma" width="380" height="200"></canvas>
+  <div class="raiz">
+    <canvas
+    ref="canFirma" class="firma" width="380" height="200"></canvas>
+    <div class="borde" 
+      @mousemove="dibujar"
+      @mousedown.left="iniciarDibujo"
+      @mousedown.right="iniciarBorrado"
+      @mouseup="detener"
+      @contextmenu.prevent
+    ></div>
+  </div>
 </template>
 
 <script>
@@ -13,6 +23,16 @@ export default {
     }
   },
   methods: {
+    iniciarDibujo() {
+      this.ctx.strokeStyle = '#303030'
+      this.ctx.lineWidth = 5
+      this.dibujando = true
+    },
+    iniciarBorrado() {
+      this.ctx.strokeStyle = '#fff'
+      this.ctx.lineWidth = 20
+      this.dibujando = true
+    },
     detener() {
       this.dibujando = false
       this.x0 = -1
@@ -40,9 +60,7 @@ export default {
     }
   },
   mounted() {
-    this.ctx = this.$refs.canFirma.getContext('2d')
-    this.ctx.strokeStyle = '#303030'
-    this.ctx.lineWidth = 5
+    this.ctx = this.$refs.canFirma.getContext('2d')    
     this.ctx.lineCap = 'round'
   }
 }
@@ -51,11 +69,31 @@ export default {
 
 <style>
 
+.raiz {
+  display: grid;
+  margin: 10px;
+}
+
+.borde {
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+  width: 380px;
+  height: 200px;
+
+  grid-row: 1;
+  grid-column: 1;
+  z-index: 3;
+}
+
 .firma {
   cursor: pointer;
   background-color: white;
   border-radius: 5px;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+
+  grid-row: 1;
+  grid-column: 1;
+  z-index: 2;
 }
 
 </style>

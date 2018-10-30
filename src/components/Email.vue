@@ -1,7 +1,7 @@
 <template>
   <div class="seccion">
     <div class="atributo">
-      <input @keyup="actualizarEmail" type="text">
+      <input @keyup.enter="actualizarEmail" type="text">
     </div>
     <div class="atributo email">
       <span>
