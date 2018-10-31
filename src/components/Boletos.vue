@@ -1,5 +1,14 @@
 <template>
   <div class="seccion">
+    <div v-if="!pago && boletos == 0" class="mensaje informacion">
+      Selecciona al menos un boleto.
+    </div>
+    <div v-else-if="!pago && boletos > 0" class="mensaje advertencia">
+      Recuerda completar tu compra.
+    </div>
+    <div v-else class="mensaje exito">
+      ¡Bienvenido!
+    </div>
     <div class="atributo">
       <span>Boletos</span>
     </div>
@@ -9,6 +18,12 @@
     <div class="atributo">
       <button @click="actualizarCantidad(1)">+</button>
       <button @click="actualizarCantidad(-1)">-</button>
+    </div>
+    <div v-if="!pago && boletos > 0" class="atributo">
+      <button @click="pago = true">Pagar</button>
+    </div>
+    <div v-if="pago" class="atributo">
+      <button @click="reiniciar">Reiniciar</button>
     </div>
     <div class="atributo">
       <span class="comision" :class="claseComision">${{ comision }}</span>
@@ -22,7 +37,8 @@ export default {
     return {
       boletos: 0,
       comision: 0,
-      claseComision: 'neutro'
+      claseComision: 'neutro',
+      pago: false
     }
   },
   methods: {
@@ -35,6 +51,11 @@ export default {
       else if(this.boletos < 0) {
         this.boletos = 0
       }
+    },
+    reiniciar() {
+      this.pago = false
+      this.boletos = 0
+      this.comision = 0
     }
   },
   watch: {
@@ -47,7 +68,7 @@ export default {
       }
 
       if(this.comision < 0) {
-        this.comision = 0
+        this.comision *= 0
       }
     },
     comision(newValue, oldValue) {
@@ -86,6 +107,27 @@ export default {
 
 .decremento {
   color: #a81717;
+}
+
+.mensaje {
+  border-radius: 5px;
+  border-width: 4px;
+  border-style: dashed;
+  padding: 10px;
+  font-size: 2.1rem;
+  font-weight: bold;
+}
+
+.informacion {
+  border-color: blue;
+}
+
+.advertencia {
+  border-color: orange;
+}
+
+.exito {
+  border-color: green;
 }
 
 </style>
