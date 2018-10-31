@@ -15,6 +15,9 @@
     <div class="atributo">
       <span class="boletos">{{ boletos }}</span>
     </div>
+    <div v-show="boletos > 0" class="atributo">
+      <span>Total: ${{ total }}</span>
+    </div>
     <div class="atributo">
       <button @click="actualizarCantidad(1)">+</button>
       <button @click="actualizarCantidad(-1)">-</button>
@@ -39,6 +42,11 @@ export default {
       comision: 0,
       claseComision: 'neutro',
       pago: false
+    }
+  },
+  computed: {
+    total() {
+      return this.boletos * 100
     }
   },
   methods: {
