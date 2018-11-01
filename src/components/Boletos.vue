@@ -16,7 +16,9 @@
         <span>Asientos</span>
       </div>
       <div class="atributo">
-        <button @click="seleccionar(asiento, index)" v-for="(asiento, index) in asientos" :key="index">{{ asiento }}</button>
+        <transition-group name="superior">
+          <button @click="seleccionar(asiento, index)" v-for="(asiento, index) in asientos" :key="asiento">{{ asiento }}</button>
+        </transition-group>
       </div>
     </div>
     <div class="seccion">
@@ -30,7 +32,9 @@
         <span>Total: ${{ total }}</span>
       </div>
       <div class="atributo">
-        <button class="seleccion" @click="remover(asiento, index)" v-for="(asiento, index) in seleccionados" :key="index">{{ asiento }}</button>
+        <transition-group name="inferior">
+          <button class="seleccion" @click="remover(asiento, index)" v-for="(asiento, index) in seleccionados" :key="asiento">{{ asiento }}</button>
+        </transition-group>
       </div>
       <div v-if="!pago && boletos > 0" class="atributo">
         <button @click="pago = true">Pagar</button>
@@ -173,9 +177,6 @@ export default {
 .scale-y-leave-active {
   transition: opacity 0.2s ease-out;
   animation: mensaje-out 0.2s ease-out forwards;
-}
-
-.scale-y-leave {
   opacity: 0;
 }
 
@@ -200,6 +201,84 @@ export default {
   }
   to {
     transform: scaleY(0);
+  }
+}
+
+.superior-enter {
+  opacity: 0;
+}
+
+.superior-enter-active {
+  transition: opacity 0.3s ease-out;
+  animation: superior-in 0.3s ease-out forwards;
+}
+
+.superior-leave-active {
+  transition: opacity 0.2s ease-out;
+  animation: superior-out 0.2s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes superior-in {
+  0% {
+    transform: translateY(30px);
+  }
+  70% {
+    transform: translateY(-10px);
+  }
+  90% {
+    transform: translateY(5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes superior-out {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(30px);
+  }
+}
+
+.inferior-enter {
+  opacity: 0;
+}
+
+.inferior-enter-active {
+  transition: opacity 0.3s ease-out;
+  animation: inferior-in 0.3s ease-out forwards;
+}
+
+.inferior-leave-active {
+  transition: opacity 0.2s ease-out;
+  animation: inferior-out 0.2s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes inferior-in {
+  0% {
+    transform: translateY(-30px);
+  }
+  70% {
+    transform: translateY(10px);
+  }
+  90% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes inferior-out {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-30px);
   }
 }
 
