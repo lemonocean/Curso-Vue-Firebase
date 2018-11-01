@@ -1,15 +1,17 @@
 <template>
   <div>
     <div class="seccion">
-      <div v-if="!pago && boletos == 0" class="mensaje informacion">
-        Selecciona al menos un boleto.
-      </div>
-      <div v-else-if="!pago && boletos > 0" class="mensaje advertencia">
-        Recuerda completar tu compra.
-      </div>
-      <div v-else class="mensaje exito">
-        ¡Bienvenido!
-      </div>
+      <transition name="scale-y" mode="out-in">
+        <div v-if="!pago && boletos == 0" :key="1" class="mensaje informacion">
+          Selecciona al menos un boleto.
+        </div>
+        <div v-else-if="!pago && boletos > 0" :key="2" class="mensaje advertencia">
+          Recuerda completar tu compra.
+        </div>
+        <div v-else :key="3" class="mensaje exito">
+          ¡Bienvenido!
+        </div>
+      </transition>
       <div class="atributo">
         <span>Asientos</span>
       </div>
@@ -158,4 +160,47 @@ export default {
 .seleccion {
   background-color: #80d80e;
 }
+
+.scale-y-enter {
+  opacity: 0;
+}
+
+.scale-y-enter-active {
+  transition: opacity 0.3s ease-out;
+  animation: mensaje-in 0.3s ease-out forwards;
+}
+
+.scale-y-leave-active {
+  transition: opacity 0.2s ease-out;
+  animation: mensaje-out 0.2s ease-out forwards;
+}
+
+.scale-y-leave {
+  opacity: 0;
+}
+
+@keyframes mensaje-in {
+  0% {
+    transform: scaleY(0);
+  }
+  70% {
+    transform: scaleY(1.2);
+  }
+  90% {
+    transform: scaleY(0.9);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes mensaje-out {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0);
+  }
+}
+
 </style>
