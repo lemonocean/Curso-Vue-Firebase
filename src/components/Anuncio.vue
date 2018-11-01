@@ -1,8 +1,10 @@
 <template>
   <div class="anuncio">
-    <span v-once>
-      {{ presentaciones[indice] }}
-    </span>
+    <transition name="fade" mode="out-in">
+      <span v-if="index == indice" v-for="(presentacion, index) in presentaciones" :key="index">
+        {{ presentacion }}
+      </span>
+    </transition>
   </div>
 </template>
 
@@ -25,34 +27,11 @@ export default {
 
       if(this.indice == this.presentaciones.length) {
         this.indice = 0
-        this.$destroy()
       }
     }
   },
-  beforeCreate() {
-    console.log('beforeCreate')
-  },
-  created() {
-    console.log('created')    
-  },
-  beforeMount() {
-    console.log('beforeMount')
-  },
   mounted() {
-    console.log('mounted')
-    setInterval(this.mostrarAnuncio, 2000)
-  },
-  beforeUpdate() {
-    console.log('beforeUpdate')
-  },
-  updated() {
-    console.log('updated')
-  },
-  beforeDestroy() {
-    console.log('beforeDestroy')
-  },
-  destroyed() {
-    console.log('destroyed')
+    setInterval(this.mostrarAnuncio, 3000)
   }
 }
 </script>
@@ -60,7 +39,7 @@ export default {
 <style>
 .anuncio {
   margin: 10px;
-  font-size: 2rem;
+  font-size: 2.2rem;
 
   border-top-color: white;
   border-top-width: 1px;
@@ -70,4 +49,21 @@ export default {
   border-bottom-width: 1px;
   border-bottom-style: solid;
 }
+
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  transition: opacity 1s ease-out;
+}
+
+.fade-leave-active {
+  transition: opacity .6s ease-out;
+}
+
+.fade-leave {
+  opacity: 0;
+}
+
 </style>
