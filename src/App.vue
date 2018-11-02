@@ -53,6 +53,10 @@ button {
   cursor: pointer;
 }
 
+button:focus {
+  outline: 0;
+}
+
 input[type='text'] {
   border-radius: 5px;
   font-size: 2.4rem;

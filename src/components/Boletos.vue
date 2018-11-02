@@ -46,11 +46,33 @@
         <span class="comision" :class="claseComision">${{ comision }}</span>
       </div>
     </div>
+    <transition name="fade">
+      <tiquete v-if="pago">
+        <div slot="obra">
+          <span>El Rey León</span>
+        </div>
+        <div slot="horario">
+          <span>2019-05-24 22:00</span>
+        </div>
+        <div slot="asientos">
+          <span class="asiento" v-for="(asiento, index) in seleccionados" :key="index">
+            {{ asiento }}
+          </span>
+        </div>
+        <div slot="total">
+          ${{ total }}
+        </div>
+      </tiquete>
+    </transition>
   </div>
 </template>
 
 <script>
+
+import Tiquete from './Tiquete'
+
 export default {
+  components: { Tiquete },
   data() {
     return {
       comision: 0,
@@ -73,11 +95,13 @@ export default {
   },
   methods: {
     seleccionar(asiento, index) {
+      if (this.pago) { return }
       this.asientos.splice(index, 1)
       this.seleccionados.push(asiento)
       this.seleccionados.sort()
     },
     remover(asiento, index) {
+      if (this.pago) { return }
       this.seleccionados.splice(index, 1)
       this.asientos.push(asiento)
       this.asientos.sort()
@@ -119,6 +143,15 @@ export default {
 </script>
 
 <style>
+.asiento {
+  font-size: 1.8rem;
+  padding: 3px;
+  margin: 3px;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+}
+
 .boletos {
   font-size: 4rem;
   font-weight: bold;
@@ -281,5 +314,4 @@ export default {
     transform: translateY(-30px);
   }
 }
-
 </style>
