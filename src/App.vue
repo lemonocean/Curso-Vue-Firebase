@@ -1,19 +1,35 @@
 <template>
   <div id="app" class="principal">
     <span>{{ titulo }}</span>
-    <entrada />
+    <div>
+      <button @click="componenteActual = item.nombre" v-for="(item, index) in menu" :key="index" class="menu">{{ item.descripcion }}</button>
+    </div>
+    <component :is="componenteActual"></component>
   </div>
 </template>
 
 <script>
 import Entrada from '@/views/Entrada.vue'
+import Home from '@/views/Home.vue'
+
+import Perfil from '@/views/usuario/Perfil.vue'
+import Login from '@/views/usuario/Login.vue'
+import Registro from '@/views/usuario/Registro.vue'
 
 export default {
-  components: { Entrada },
+  components: { Entrada, Home, Perfil, Login, Registro },
   name: 'App',
   data() {
     return {
-      titulo: 'Entradas'
+      titulo: 'Entradas',
+      componenteActual: 'entrada',
+      menu: [
+        { descripcion: 'Home', nombre: 'home' },
+        { descripcion: 'Entradas', nombre: 'entrada' },
+        { descripcion: 'Perfil', nombre: 'perfil' },
+        { descripcion: 'Login', nombre: 'login' },
+        { descripcion: 'Registro', nombre: 'registro' }
+      ]
     }
   }
 }
@@ -23,6 +39,14 @@ export default {
 
 html {
   font-size: 62.5% !important; /* 10px / 16px = 0.625 */
+}
+
+.menu {
+  color: white;
+  background-color: transparent;
+  font-weight: normal;
+  font-size: 1.8rem;
+  margin: 3px 2px;
 }
 
 .principal {
