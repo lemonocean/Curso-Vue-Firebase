@@ -1,5 +1,13 @@
 <template>
-  <div class="seccion">
-    Home
-  </div>
+  <HelloWorld />
 </template>
+
+<script>
+  import HelloWorld from '../components/HelloWorld'
+
+  export default {
+    components: {
+      HelloWorld
+    }
+  }
+</script>
