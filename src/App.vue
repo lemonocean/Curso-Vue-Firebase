@@ -7,7 +7,9 @@
     </v-toolbar>
 
     <v-content>
-      <home />
+      <v-container fluid fill-height>
+        <registro />
+      </v-container>
     </v-content>
   </v-app>
 </template>
@@ -15,9 +17,10 @@
 <script>
 
 import Home from '@/views/Home.vue'
+import Registro from '@/views/usuario/Registro.vue'
 
 export default {
-  components: { Home },
+  components: { Home, Registro },
   name: 'App',
   data () {
     return {
