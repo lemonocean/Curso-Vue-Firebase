@@ -8,7 +8,7 @@
 
     <v-content>
       <v-container fluid fill-height>
-        <registro />
+        <component :is="componenteActual"></component>
       </v-container>
     </v-content>
   </v-app>
@@ -18,13 +18,15 @@
 
 import Home from '@/views/Home.vue'
 import Registro from '@/views/usuario/Registro.vue'
+import Login from '@/views/usuario/Login.vue'
 
 export default {
-  components: { Home, Registro },
+  components: { Home, Registro, Login },
   name: 'App',
   data () {
     return {
-      titulo: 'Súper Ópera'
+      titulo: 'Súper Ópera',
+      componenteActual: 'login'
     }
   }
 }
