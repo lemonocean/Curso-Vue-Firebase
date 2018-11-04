@@ -19,14 +19,15 @@
 import Home from '@/views/Home.vue'
 import Registro from '@/views/usuario/Registro.vue'
 import Login from '@/views/usuario/Login.vue'
+import Perfil from '@/views/usuario/Perfil.vue'
 
 export default {
-  components: { Home, Registro, Login },
+  components: { Home, Registro, Login, Perfil },
   name: 'App',
   data () {
     return {
       titulo: 'Súper Ópera',
-      componenteActual: 'login'
+      componenteActual: 'perfil'
     }
   }
 }
