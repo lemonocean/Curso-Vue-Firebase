@@ -27,8 +27,14 @@ export default {
   data () {
     return {
       titulo: 'Súper Ópera',
-      componenteActual: 'perfil'
+      componenteActual: 'home'
     }
   }
 }
 </script>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css?family=Great+Vibes');
+
+</style>
