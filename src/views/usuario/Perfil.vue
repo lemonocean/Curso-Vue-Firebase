@@ -1,6 +1,6 @@
 <template>
   <v-layout text-xs-center align-start justify-center>
-    <v-card>
+    <v-card class="elevation-6">
       <v-card-text>
         <div class="ma-2">
           Nombres y Apellidos

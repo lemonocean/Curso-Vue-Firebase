@@ -38,16 +38,24 @@
     </v-navigation-drawer>
     <v-toolbar color="primary" dark app>
       <v-toolbar-side-icon @click="menu = !menu"></v-toolbar-side-icon>
-      <v-toolbar-title class="headline text-uppercase">
+      <v-toolbar-title @click="componenteActual = 'home'" class="headline logo">
         <span>{{ titulo }}</span>
       </v-toolbar-title>      
     </v-toolbar>
 
     <v-content>
       <v-container fluid fill-height>
-        <component :is="componenteActual"></component>
+        <v-slide-y-transition mode="out-in">
+          <component :is="componenteActual"></component>
+        </v-slide-y-transition>
       </v-container>
     </v-content>
+
+    <v-footer color="primary" dark>
+      <v-layout justify-center>
+        <span>Curso Vue.js y Firebase - Jorge Bustamante</span>
+      </v-layout>
+    </v-footer>
   </v-app>
 </template>
 
@@ -80,5 +88,10 @@ export default {
 <style>
 
 @import url('https://fonts.googleapis.com/css?family=Great+Vibes');
+
+.logo {
+  font-family: 'Great Vibes', cursive !important;
+  cursor: pointer;
+}
 
 </style>
