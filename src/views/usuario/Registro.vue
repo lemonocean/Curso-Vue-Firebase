@@ -26,8 +26,8 @@
             </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <v-text-field label="Nombres"></v-text-field>
-            <v-text-field label="Apellidos"></v-text-field>
+            <v-text-field @blur="$v.f2.nombres.$touch()" :error-messages="erroresNombres" v-model="f2.nombres" label="Nombres"></v-text-field>
+            <v-text-field @keyup.enter="siguiente(2)" @blur="$v.f2.apellidos.$touch()" :error-messages="erroresApellidos" v-model="f2.apellidos" label="Apellidos"></v-text-field>
           </v-card-text>
           <v-card-text>
             <v-layout>
@@ -38,7 +38,7 @@
               </v-flex>
               <v-flex xs6>
                 <v-layout justify-end>
-                  <v-btn @click="vista++" color="secondary">Siguiente</v-btn>
+                  <v-btn @click="siguiente(2)" :depressed="$v.f2.$invalid" :disabled="$v.f2.$invalid" color="secondary">Siguiente</v-btn>
                 </v-layout>
               </v-flex>
             </v-layout>
@@ -56,8 +56,17 @@
             </v-layout>
           </v-card-text>
           <v-card-text>
-            <v-layout justify-end>
-              <v-btn color="secondary">Registrarse</v-btn>
+            <v-layout>
+              <v-flex xs6>
+                <v-layout justify-start>
+                  <v-btn @click="vista--">Atrás</v-btn>
+                </v-layout>
+              </v-flex>
+              <v-flex xs6>
+                <v-layout justify-end>
+                  <v-btn color="secondary">Registrarse</v-btn>
+                </v-layout>
+              </v-flex>
             </v-layout>
           </v-card-text>
         </v-card>
@@ -67,16 +76,20 @@
 </template>
 
 <script>
-import { required, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators'
+import { required, email, minLength, maxLength, sameAs, alpha } from 'vuelidate/lib/validators'
 
 export default {
   data() {
     return {
-      vista: 1,
+      vista: 2,
       f1: {
         email: '',
         password: '',
         repetirPassword: ''
+      },
+      f2: {
+        nombres: '',
+        apellidos: ''
       },
       fechaNacimiento: null
     }
@@ -95,6 +108,20 @@ export default {
       repetirPassword: {
         sameAs: sameAs('password')
       }
+    },
+    f2: {
+      nombres: {
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(20),
+        alpha
+      },
+      apellidos: {
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(20),
+        alpha
+      }
     }
   },
   methods: {
@@ -103,6 +130,15 @@ export default {
         case 1:
           if (this.$v.f1.$invalid) {
             this.$v.f1.$touch()
+            return
+          }
+          else {
+            this.vista++
+          }
+          break
+        case 2:
+          if (this.$v.f2.$invalid) {
+            this.$v.f2.$touch()
             return
           }
           else {
@@ -132,6 +168,24 @@ export default {
       let errores = []
       if (!this.$v.f1.repetirPassword.$dirty) { return errores }
       if (!this.$v.f1.repetirPassword.sameAs) { errores.push('Las contraseñas no coinciden.') }
+      return errores
+    },
+    erroresNombres() {
+      let errores = []
+      if (!this.$v.f2.nombres.$dirty) { return errores }
+      if (!this.$v.f2.nombres.required) { errores.push('Ingresa tu nombre.') }
+      if (!this.$v.f2.nombres.minLength) { errores.push('Ingresa al menos 3 caracteres.') }
+      if (!this.$v.f2.nombres.maxLength) { errores.push('Ingresa máximo 20 caracteres.') }
+      if (!this.$v.f2.nombres.alpha) { errores.push('Ingresa solo letras.') }
+      return errores
+    },
+    erroresApellidos() {
+      let errores = []
+      if (!this.$v.f2.apellidos.$dirty) { return errores }
+      if (!this.$v.f2.apellidos.required) { errores.push('Ingresa tus apellidos.') }
+      if (!this.$v.f2.apellidos.minLength) { errores.push('Ingresa al menos 3 caracteres.') }
+      if (!this.$v.f2.apellidos.maxLength) { errores.push('Ingresa máximo 20 caracteres.') }
+      if (!this.$v.f2.apellidos.alpha) { errores.push('Ingresa solo letras.') }
       return errores
     }
   }
