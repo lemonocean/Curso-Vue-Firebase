@@ -1,7 +1,7 @@
 <template>
   <v-layout justify-center align-center>
     <v-flex xs12 sm8 md6 lg5 xl4>
-      <v-slide-y-transition mode="out-in">
+      <v-slide-y-transition mode="out-in" @enter="enter">
         <v-card v-if="vista == 1" :key="1" class="elevation-6">
           <v-toolbar color="primary" dark card>
             <v-toolbar-title>
@@ -52,7 +52,7 @@
           </v-toolbar>
           <v-card-text>
             <v-layout justify-center>
-              <v-date-picker v-model="fechaNacimiento" reactive locale="es-co" class="elevation-3"></v-date-picker>
+              <v-date-picker ref="calendario" :max="fechaMaxima" v-model="fechaNacimiento" reactive locale="es-co" class="elevation-3"></v-date-picker>
             </v-layout>
           </v-card-text>
           <v-card-text>
@@ -64,7 +64,7 @@
               </v-flex>
               <v-flex xs6>
                 <v-layout justify-end>
-                  <v-btn color="secondary">Registrarse</v-btn>
+                  <v-btn @click="registrar" :depressed="$v.fechaNacimiento.$invalid" :disabled="$v.fechaNacimiento.$invalid" color="secondary">Registrarse</v-btn>
                 </v-layout>
               </v-flex>
             </v-layout>
@@ -91,7 +91,8 @@ export default {
         nombres: '',
         apellidos: ''
       },
-      fechaNacimiento: null
+      fechaNacimiento: null,
+      fechaMaxima: null
     }
   },
   validations: {
@@ -122,7 +123,16 @@ export default {
         maxLength: maxLength(20),
         alpha
       }
+    },
+    fechaNacimiento: {
+      required
     }
+  },
+  created() {
+    let fechaActual = new Date()
+    this.fechaMaxima = new Date(fechaActual.setFullYear(fechaActual.getFullYear() - 13))
+      .toISOString()
+      .substr(0, 10)
   },
   methods: {
     siguiente(vista) {
@@ -145,6 +155,16 @@ export default {
             this.vista++
           }
           break
+      }
+    },    
+    registrar() {
+      if(this.$v.fechaNacimiento.$invalid) { return }
+
+      alert('Registrando...')
+    },
+    enter() {
+      if(this.vista == 3 && !this.fechaNacimiento) {
+        this.$refs.calendario.activePicker = 'YEAR'
       }
     }
   },
