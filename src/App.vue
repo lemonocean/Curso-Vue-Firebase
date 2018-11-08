@@ -10,7 +10,7 @@
             <v-list-tile-title v-text="'Inicio'"></v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile @click="seleccionar('perfil')">
+        <v-list-tile v-if="usuario" @click="seleccionar('perfil')">
           <v-list-tile-action>
             <v-icon>account_circle</v-icon>
           </v-list-tile-action>
@@ -18,20 +18,20 @@
             <v-list-tile-title v-text="'Perfil'"></v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile @click="seleccionar('registro')">
-          <v-list-tile-action>
-            <v-icon>contact_mail</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title v-text="'Registro'"></v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile @click="seleccionar('login')">
+        <v-list-tile v-if="!usuario" @click="seleccionar('login')">
           <v-list-tile-action>
             <v-icon>arrow_forward</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title v-text="'Ingresar'"></v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile v-if="usuario" @click="salir">
+          <v-list-tile-action>
+            <v-icon>arrow_back</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title v-text="'Salir'"></v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -119,6 +119,10 @@ export default {
     },
     ocultarNotificacion() {
       this.$store.commit('ocultarNotificacion')
+    },
+    salir() {
+      this.$store.dispatch('salir')
+      this.menu = false
     }
   }
 }

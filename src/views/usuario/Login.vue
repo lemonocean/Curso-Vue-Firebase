@@ -79,7 +79,7 @@ export default {
         let vocal = usuario.sexo && usuario.sexo == 'F' ? 'a' : 'o'
         let mensaje = `¡Bienvenid${vocal} ${usuario.nombres}!`
         this.$store.commit('mostrarExito', mensaje)
-      }, 5000);
+      }, 1000);
     }
   },
   computed: {

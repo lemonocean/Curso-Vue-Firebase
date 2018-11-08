@@ -54,7 +54,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
-
+    salir({ commit }) {
+      commit('actualizarUsuario', null)
+    }
   },
   getters: {
 
