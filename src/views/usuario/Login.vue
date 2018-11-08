@@ -49,9 +49,9 @@ export default {
   },
   methods: {
     ingresar() {
-      if(this.$v.formulario.$invalid) { 
+      if (this.$v.formulario.$invalid) {
         this.$v.formulario.$touch()
-        return 
+        return
       }
 
       let usuario = {
@@ -64,13 +64,22 @@ export default {
         fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg'
       }
 
-      this.$store.commit('actualizarUsuario', usuario)
+      let ocupado = {
+        titulo: 'Validando Credenciales',
+        mensaje: 'Estamos validando tu información...'
+      }
 
-      let vocal = usuario.sexo && usuario.sexo == 'F' ? 'a' : 'o'
+      this.$store.commit('mostrarOcupado', ocupado)
 
-      let mensaje = `¡Bienvenid${vocal} ${usuario.nombres}!`
+      setTimeout(() => {
+        this.$store.commit('ocultarOcupado')
 
-      this.$store.commit('mostrarExito', mensaje)
+        this.$store.commit('actualizarUsuario', usuario)
+
+        let vocal = usuario.sexo && usuario.sexo == 'F' ? 'a' : 'o'
+        let mensaje = `¡Bienvenid${vocal} ${usuario.nombres}!`
+        this.$store.commit('mostrarExito', mensaje)
+      }, 5000);
     }
   },
   computed: {

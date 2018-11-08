@@ -60,6 +60,22 @@
       </v-btn>
     </v-snackbar>
 
+    <v-dialog v-model="ocupado.visible" max-width="400" persistent>
+      <v-card>
+        <v-toolbar color="primary" dark card>
+          <v-toolbar-title>
+            {{ ocupado.titulo }}
+          </v-toolbar-title>
+        </v-toolbar>
+        <v-card-text class="subheading">
+          {{ ocupado.mensaje }}
+        </v-card-text>
+        <v-card-text>
+          <v-progress-linear :indeterminate="true" color="primary"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <v-footer color="primary" dark>
       <v-layout justify-center>
         <span>Curso Vue.js y Firebase - Jorge Bustamante</span>
@@ -91,6 +107,9 @@ export default {
     },
     notificacion() {
       return this.$store.state.notificacion
+    },
+    ocupado() {
+      return this.$store.state.ocupado
     }
   },
   methods: {

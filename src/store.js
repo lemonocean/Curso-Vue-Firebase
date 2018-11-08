@@ -10,6 +10,11 @@ export default new Vuex.Store({
       visible: false,
       mensaje: '',
       color: 'info'
+    },
+    ocupado: {
+      visible: false,
+      titulo: '',
+      mensaje: ''
     }
   },
   mutations: {
@@ -38,6 +43,14 @@ export default new Vuex.Store({
     },
     ocultarNotificacion(state) {
       state.notificacion.visible = false
+    },
+    mostrarOcupado(state, ocupado) {
+      state.ocupado.titulo = ocupado.titulo
+      state.ocupado.mensaje = ocupado.mensaje
+      state.ocupado.visible = true
+    },
+    ocultarOcupado(state) {
+      state.ocupado.visible = false
     }
   },
   actions: {
