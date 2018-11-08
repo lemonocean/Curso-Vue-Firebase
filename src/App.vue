@@ -53,6 +53,13 @@
       </v-container>
     </v-content>
 
+    <v-snackbar v-model="notificacion.visible" :color="notificacion.color" multi-line top :timeout="6000" dark>
+      {{notificacion.mensaje }}
+      <v-btn color="white" flat @click="ocultarNotificacion">
+        Cerrar
+      </v-btn>
+    </v-snackbar>
+
     <v-footer color="primary" dark>
       <v-layout justify-center>
         <span>Curso Vue.js y Firebase - Jorge Bustamante</span>
@@ -81,12 +88,18 @@ export default {
   computed: {
     usuario() {
       return this.$store.state.usuario
+    },
+    notificacion() {
+      return this.$store.state.notificacion
     }
   },
   methods: {
     seleccionar(nombre) {
       this.componenteActual = nombre
       this.menu = false
+    },
+    ocultarNotificacion() {
+      this.$store.commit('ocultarNotificacion')
     }
   }
 }

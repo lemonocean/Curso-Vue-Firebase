@@ -36,7 +36,8 @@
       "eslint:recommended"
     ],
     "rules": {
-      "no-console": 0
+      "no-console": 0,
+      "no-regex-spaces": 0
     },
     "parserOptions": {
       "parser": "babel-eslint"

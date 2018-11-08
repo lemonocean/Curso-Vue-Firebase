@@ -64,7 +64,13 @@ export default {
         fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg'
       }
 
-      this.$store.state.usuario = usuario
+      this.$store.commit('actualizarUsuario', usuario)
+
+      let vocal = usuario.sexo && usuario.sexo == 'F' ? 'a' : 'o'
+
+      let mensaje = `¡Bienvenid${vocal} ${usuario.nombres}!`
+
+      this.$store.commit('mostrarExito', mensaje)
     }
   },
   computed: {
