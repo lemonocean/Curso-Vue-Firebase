@@ -40,7 +40,9 @@
       <v-toolbar-side-icon @click="menu = !menu"></v-toolbar-side-icon>
       <v-toolbar-title @click="componenteActual = 'home'" class="headline logo">
         <span>{{ titulo }}</span>
-      </v-toolbar-title>      
+      </v-toolbar-title>   
+      <v-spacer></v-spacer>  
+      <span v-if="usuario">{{ usuario.nombres }}</span> 
     </v-toolbar>
 
     <v-content>
@@ -74,6 +76,11 @@ export default {
       titulo: 'Súper Ópera',
       componenteActual: 'home',
       menu: false
+    }
+  },
+  computed: {
+    usuario() {
+      return this.$store.state.usuario
     }
   },
   methods: {

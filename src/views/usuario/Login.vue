@@ -54,7 +54,17 @@ export default {
         return 
       }
 
-      alert('Consultando...')
+      let usuario = {
+        userName: 'newton',
+        nombres: 'Isaac',
+        apellidos: 'Newton',
+        sexo: 'M',
+        descripcion: 'Descripción',
+        biografia: 'https://es.wikipedia.org/wiki/Isaac_Newton',
+        fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg'
+      }
+
+      this.$store.state.usuario = usuario
     }
   },
   computed: {
