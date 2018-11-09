@@ -76,9 +76,7 @@ export default {
 
         this.$store.commit('actualizarUsuario', usuario)
 
-        let vocal = usuario.sexo && usuario.sexo == 'F' ? 'a' : 'o'
-        let mensaje = `¡Bienvenid${vocal} ${usuario.nombres}!`
-        this.$store.commit('mostrarExito', mensaje)
+        this.$store.commit('mostrarExito', this.$store.getters.saludo)
       }, 1000);
     }
   },
