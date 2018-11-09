@@ -49,7 +49,8 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['mostrarOcupado', 'ocultarOcupado', 'actualizarUsuario', 'mostrarExito']),
+    ...mapMutations(['mostrarOcupado', 'ocultarOcupado', 'mostrarExito']),
+    ...mapMutations('sesion', ['actualizarUsuario']),
     ingresar() {
       if (this.$v.formulario.$invalid) {
         this.$v.formulario.$touch()
@@ -81,7 +82,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['saludo']),
+    ...mapGetters('sesion', ['saludo']),
     erroresEmail() {
       let errores = []
       if (!this.$v.formulario.email.$dirty) { return errores }

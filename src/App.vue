@@ -105,11 +105,11 @@ export default {
   },
   computed: {
     ...mapState(['notificacion', 'ocupado']),
-    ...mapState({ usuario: state => state.sesion.usuario })
+    ...mapState('sesion', ['usuario'])
   },
   methods: {
     ...mapMutations(['ocultarNotificacion']),
-    ...mapActions(['cerrarSesion']),
+    ...mapActions('sesion', ['cerrarSesion']),
     seleccionar(nombre) {
       this.componenteActual = nombre
       this.menu = false

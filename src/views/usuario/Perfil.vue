@@ -16,11 +16,11 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   computed: {
-    usuario() {
-      return this.$store.state.sesion.usuario
-    }
+    ...mapState('sesion', ['usuario'])
   }
 }
 </script>
