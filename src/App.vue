@@ -104,7 +104,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['usuario', 'notificacion', 'ocupado'])
+    ...mapState(['notificacion', 'ocupado']),
+    ...mapState({ usuario: state => state.sesion.usuario })
   },
   methods: {
     ...mapMutations(['ocultarNotificacion']),

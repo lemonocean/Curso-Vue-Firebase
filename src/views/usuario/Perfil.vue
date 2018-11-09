@@ -19,7 +19,7 @@
 export default {
   computed: {
     usuario() {
-      return this.$store.state.usuario
+      return this.$store.state.sesion.usuario
     }
   }
 }
