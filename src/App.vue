@@ -91,6 +91,8 @@ import Registro from '@/views/usuario/Registro.vue'
 import Login from '@/views/usuario/Login.vue'
 import Perfil from '@/views/usuario/Perfil.vue'
 
+import { mapState, mapMutations, mapActions } from 'vuex'
+
 export default {
   components: { Home, Registro, Login, Perfil },
   name: 'App',
@@ -102,26 +104,17 @@ export default {
     }
   },
   computed: {
-    usuario() {
-      return this.$store.state.usuario
-    },
-    notificacion() {
-      return this.$store.state.notificacion
-    },
-    ocupado() {
-      return this.$store.state.ocupado
-    }
+    ...mapState(['usuario', 'notificacion', 'ocupado'])
   },
   methods: {
+    ...mapMutations(['ocultarNotificacion']),
+    ...mapActions(['cerrarSesion']),
     seleccionar(nombre) {
       this.componenteActual = nombre
       this.menu = false
     },
-    ocultarNotificacion() {
-      this.$store.commit('ocultarNotificacion')
-    },
     salir() {
-      this.$store.dispatch('salir')
+      this.cerrarSesion()
       this.menu = false
     }
   }

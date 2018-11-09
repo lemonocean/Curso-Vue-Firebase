@@ -54,7 +54,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    salir({ commit }) {
+    cerrarSesion({ commit }) {
       commit('actualizarUsuario', null)
     }
   },

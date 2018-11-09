@@ -24,6 +24,7 @@
 <script>
 
 import { required, email, minLength, maxLength } from 'vuelidate/lib/validators'
+import { mapMutations, mapGetters } from 'vuex'
 
 export default {
   data() {
@@ -48,6 +49,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['mostrarOcupado', 'ocultarOcupado', 'actualizarUsuario', 'mostrarExito']),
     ingresar() {
       if (this.$v.formulario.$invalid) {
         this.$v.formulario.$touch()
@@ -69,18 +71,17 @@ export default {
         mensaje: 'Estamos validando tu información...'
       }
 
-      this.$store.commit('mostrarOcupado', ocupado)
+      this.mostrarOcupado(ocupado)
 
       setTimeout(() => {
-        this.$store.commit('ocultarOcupado')
-
-        this.$store.commit('actualizarUsuario', usuario)
-
-        this.$store.commit('mostrarExito', this.$store.getters.saludo)
+        this.ocultarOcupado()
+        this.actualizarUsuario(usuario)
+        this.mostrarExito(this.saludo)
       }, 1000);
     }
   },
   computed: {
+    ...mapGetters(['saludo']),
     erroresEmail() {
       let errores = []
       if (!this.$v.formulario.email.$dirty) { return errores }
