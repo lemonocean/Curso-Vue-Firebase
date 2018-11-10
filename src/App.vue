@@ -48,7 +48,7 @@
     <v-content>
       <v-container fluid fill-height>
         <v-slide-y-transition mode="out-in">
-          <component :is="componenteActual"></component>
+          <router-view></router-view>
         </v-slide-y-transition>
       </v-container>
     </v-content>
