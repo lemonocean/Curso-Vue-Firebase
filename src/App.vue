@@ -38,7 +38,7 @@
     </v-navigation-drawer>
     <v-toolbar color="primary" dark app>
       <v-toolbar-side-icon @click="menu = !menu"></v-toolbar-side-icon>
-      <v-toolbar-title @click="componenteActual = 'home'" class="headline logo">
+      <v-toolbar-title @click="$router.push({ name: 'home' })" class="headline logo">
         <span>{{ titulo }}</span>
       </v-toolbar-title>   
       <v-spacer></v-spacer>  
@@ -101,7 +101,6 @@ export default {
   data () {
     return {
       titulo: 'Súper Ópera',
-      componenteActual: 'home',
       menu: false
     }
   },
@@ -112,13 +111,10 @@ export default {
   methods: {
     ...mapMutations(['ocultarNotificacion']),
     ...mapActions('sesion', ['cerrarSesion']),
-    seleccionar(nombre) {
-      this.componenteActual = nombre
-      this.menu = false
-    },
     salir() {
       this.cerrarSesion()
       this.menu = false
+      this.$router.push({ name: 'login' })
     }
   }
 }

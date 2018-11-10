@@ -83,6 +83,7 @@ export default {
         this.ocultarOcupado()
         this.actualizarUsuario(usuario)
         this.mostrarExito(this.saludo)
+        this.$router.push({ name: 'home' })
       }, 1000);
     }
   },
