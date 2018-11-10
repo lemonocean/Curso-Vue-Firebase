@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer v-model="menu" app temporary>
       <v-list>
-        <v-list-tile @click="seleccionar('home')">
+        <v-list-tile :to="{ path: '/' }">
           <v-list-tile-action>
             <v-icon>home</v-icon>
           </v-list-tile-action>
@@ -10,7 +10,7 @@
             <v-list-tile-title v-text="'Inicio'"></v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile v-if="usuario" @click="seleccionar('perfil')">
+        <v-list-tile v-if="usuario" :to="{ name: 'perfil' }">
           <v-list-tile-action>
             <v-icon>account_circle</v-icon>
           </v-list-tile-action>
@@ -18,7 +18,7 @@
             <v-list-tile-title v-text="'Perfil'"></v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile v-if="!usuario" @click="seleccionar('login')">
+        <v-list-tile v-if="!usuario" :to="{ name: 'login' }">
           <v-list-tile-action>
             <v-icon>arrow_forward</v-icon>
           </v-list-tile-action>
@@ -42,7 +42,9 @@
         <span>{{ titulo }}</span>
       </v-toolbar-title>   
       <v-spacer></v-spacer>  
-      <span v-if="usuario">{{ usuario.nombres }}</span> 
+      <router-link class="nombre" :to="{ name: 'perfil' }">
+        <span v-if="usuario">{{ usuario.nombres }}</span> 
+      </router-link>
     </v-toolbar>
 
     <v-content>
@@ -129,6 +131,12 @@ export default {
 .logo {
   font-family: 'Great Vibes', cursive !important;
   cursor: pointer;
+}
+
+.nombre {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
 }
 
 </style>

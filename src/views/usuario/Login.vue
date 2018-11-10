@@ -16,6 +16,11 @@
             <v-btn @click="ingresar" :depressed="$v.formulario.$invalid" :disabled="$v.formulario.$invalid" color="secondary">Ingresar</v-btn>
           </v-layout>
         </v-card-text>
+        <v-card-actions>
+          <v-btn :to="{ name: 'registro' }" flat color="secondary">
+            ¿No tienes cuenta? Regístrate.
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-flex>
   </v-layout>

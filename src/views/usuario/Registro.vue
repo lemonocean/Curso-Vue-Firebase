@@ -18,6 +18,11 @@
               <v-btn :depressed="$v.f1.$invalid" :disabled="$v.f1.$invalid" @click="siguiente(1)" color="secondary">Siguiente</v-btn>
             </v-layout>
           </v-card-text>
+          <v-card-actions>
+            <v-btn :to="{ name: 'login' }" flat color="secondary">
+              ¿Ya tienes cuenta? Ingresa.
+            </v-btn>
+          </v-card-actions>
         </v-card>
         <v-card v-if="vista == 2" :key="2" class="elevation-6">
           <v-toolbar color="primary" dark card>
@@ -82,7 +87,7 @@ import { nombreCompuesto } from '@/utilidades/validaciones'
 export default {
   data() {
     return {
-      vista: 2,
+      vista: 1,
       f1: {
         email: '',
         password: '',
@@ -157,14 +162,14 @@ export default {
           }
           break
       }
-    },    
+    },
     registrar() {
-      if(this.$v.fechaNacimiento.$invalid) { return }
+      if (this.$v.fechaNacimiento.$invalid) { return }
 
       alert('Registrando...')
     },
     enter() {
-      if(this.vista == 3 && !this.fechaNacimiento) {
+      if (this.vista == 3 && !this.fechaNacimiento) {
         this.$refs.calendario.activePicker = 'YEAR'
       }
     }
