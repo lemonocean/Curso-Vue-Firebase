@@ -5,7 +5,7 @@
     </div>
     <v-layout wrap align-center>
       <v-flex xs12 sm6 md4 lg3 v-for="obra in obras" :key="obra.oid">
-        <v-card class="elevation-5 ma-3">
+        <v-card class="elevation-5 ma-3" :to="{ name: 'obra', params: { oid: obra.oid } }">
           <v-img :src="obra.portada">
             <v-layout align-end justify-center fill-height>
               <v-spacer></v-spacer>

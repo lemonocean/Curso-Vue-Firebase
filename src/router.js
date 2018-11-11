@@ -5,6 +5,7 @@ import Home from './views/Home.vue'
 import Login from './views/usuario/Login.vue'
 import Registro from './views/usuario/Registro.vue'
 import Perfil from './views/usuario/Perfil.vue'
+import Obra from './views/teatro/Obra.vue'
 
 Vue.use(Router)
 
@@ -34,14 +35,11 @@ const router = new Router({
       meta: {
         autenticado: true
       }
-      // beforeEnter: (to, from, next) => {
-      //   if(store.state.sesion.usuario) {
-      //     next()
-      //   }
-      //   else {
-      //     next({ name: 'login' })
-      //   }
-      // }
+    },
+    {
+      path: '/obras/:oid',
+      name: 'obra',
+      component: Obra
     }
   ]
 })
