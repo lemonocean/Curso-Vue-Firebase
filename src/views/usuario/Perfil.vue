@@ -17,11 +17,20 @@
 
 <script>
 import { mapState } from 'vuex'
+import store from '@/store'
 
 export default {
   computed: {
     ...mapState('sesion', ['usuario'])
   }
+  // beforeRouteEnter (to, from, next) {
+  //   if(store.state.sesion.usuario) {
+  //     next()
+  //   }
+  //   else {
+  //     next({ name: 'login' })
+  //   }
+  // }
 }
 </script>
 
