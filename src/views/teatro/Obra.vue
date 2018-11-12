@@ -1,6 +1,6 @@
 <template>
   <v-layout justify-center text-xs-center>
-    <v-flex xs12 sm6 md4 lg3>
+    <v-flex v-if="obra" xs12 sm6 md4 lg3>
       <div class="obra-titulo">
         <h1>{{ obra.titulo }}</h1>
       </div>
@@ -33,7 +33,7 @@ export default {
     this.obra = this.obras.find(o => o.oid == oid)
 
     if(!this.obra) {
-      // 404
+      this.$router.push({ name: '404' })
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <v-layout justify-center align-center>
-    <v-card>
+    <v-card v-if="presentacion">
       <v-card-text>
         <span>Obra: {{ presentacion.obra.titulo }}</span>
       </v-card-text>
@@ -37,13 +37,13 @@ export default {
     let obra = this.obras.find(o => o.oid == oid)
 
     if(!obra) {
-      // 404
+      this.$router.push({ name: '404' })
     }
     else {
       this.presentacion = obra.presentaciones.find(p => p.pid == pid)
 
       if(!this.presentacion) {
-        // 404
+        this.$router.push({ name: '404' })
       }
     }
   }
