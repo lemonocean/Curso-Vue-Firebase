@@ -7,7 +7,7 @@
       <v-card class="elevation-2 ma-3">
         <v-img :src="obra.portada"></v-img>
       </v-card>
-      <v-btn v-for="p in obra.presentaciones" :key="p.pid">
+      <v-btn :to="{ name: 'presentacion', params: { oid: p.obra.oid, tid: p.teatro.tid, fecha: p.fecha } }" v-for="p in obra.presentaciones" :key="p.pid">
         {{ `${p.teatro.nombre} - ${p.fecha}` }}
       </v-btn>
     </v-flex>

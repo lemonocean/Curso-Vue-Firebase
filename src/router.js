@@ -6,6 +6,7 @@ import Login from './views/usuario/Login.vue'
 import Registro from './views/usuario/Registro.vue'
 import Perfil from './views/usuario/Perfil.vue'
 import Obra from './views/teatro/Obra.vue'
+import Presentacion from './views/teatro/Presentacion.vue'
 
 Vue.use(Router)
 
@@ -40,6 +41,11 @@ const router = new Router({
       path: '/obras/:oid',
       name: 'obra',
       component: Obra
+    },
+    {
+      path: '/:oid/:tid/:fecha',
+      name: 'presentacion',
+      component: Presentacion
     }
   ]
 })
