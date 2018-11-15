@@ -8,7 +8,7 @@
           </v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-          <v-text-field label="Email" v-model="formulario.email" :error-messages="erroresEmail" @blur="$v.formulario.email.$touch()"></v-text-field>
+          <v-text-field label="Email" autofocus v-model="formulario.email" :error-messages="erroresEmail" @blur="$v.formulario.email.$touch()"></v-text-field>
           <v-text-field label="Password" @keyup.enter="ingresar" v-model="formulario.password" :error-messages="erroresPassword" @blur="$v.formulario.password.$touch()" type="password"></v-text-field>
         </v-card-text>
         <v-card-text>
@@ -30,6 +30,7 @@
 
 import { required, email, minLength, maxLength } from 'vuelidate/lib/validators'
 import { mapMutations, mapGetters } from 'vuex'
+import { auth } from '@/firebase'
 
 export default {
   data() {
@@ -54,22 +55,12 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['mostrarOcupado', 'ocultarOcupado', 'mostrarExito']),
+    ...mapMutations(['mostrarOcupado', 'ocultarOcupado', 'mostrarExito', 'mostrarAdvertencia']),
     ...mapMutations('sesion', ['actualizarUsuario']),
-    ingresar() {
+    async ingresar() {
       if (this.$v.formulario.$invalid) {
         this.$v.formulario.$touch()
         return
-      }
-
-      let usuario = {
-        userName: 'newton',
-        nombres: 'Isaac',
-        apellidos: 'Newton',
-        sexo: 'M',
-        descripcion: 'Descripción',
-        biografia: 'https://es.wikipedia.org/wiki/Isaac_Newton',
-        fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg'
       }
 
       let ocupado = {
@@ -79,12 +70,39 @@ export default {
 
       this.mostrarOcupado(ocupado)
 
-      setTimeout(() => {
+      try {
+        let cred = await auth.signInWithEmailAndPassword(this.formulario.email, this.formulario.password)
+
+        let usuario = {
+          uid: cred.user.uid,
+          userName: 'newton',
+          nombres: 'Isaac',
+          apellidos: 'Newton',
+          sexo: 'M',
+          descripcion: 'Descripción',
+          biografia: 'https://es.wikipedia.org/wiki/Isaac_Newton',
+          fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg'
+        }
+
         this.ocultarOcupado()
         this.actualizarUsuario(usuario)
         this.mostrarExito(this.saludo)
         this.$router.push({ name: 'home' })
-      }, 1000);
+      }
+      catch (error) {
+        this.ocultarOcupado()
+
+        switch (error.code) {
+          case 'auth/user-not-found':
+          case 'auth/wrong-password':
+            this.mostrarAdvertencia('Usuario no válido. Revisa tu correo y contraseña.')
+            break
+
+          default:
+            this.mostrarError('Ocurrió un error validando la información.')
+            break
+        }
+      }
     }
   },
   computed: {
