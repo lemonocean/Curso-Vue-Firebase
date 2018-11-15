@@ -9,7 +9,7 @@
             </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <v-text-field @blur="$v.f1.email.$touch()" :error-messages="erroresEmail" v-model="f1.email" label="Email"></v-text-field>
+            <v-text-field @blur="$v.f1.email.$touch()" autofocus :error-messages="erroresEmail" v-model="f1.email" label="Email"></v-text-field>
             <v-text-field @blur="$v.f1.password.$touch()" :error-messages="erroresPassword" v-model="f1.password" label="Password" type="password"></v-text-field>
             <v-text-field @keyup.enter="siguiente(1)" @blur="$v.f1.repetirPassword.$touch()" :error-messages="erroresRepetirPassword" v-model="f1.repetirPassword" label="Repetir Password" type="password"></v-text-field>
           </v-card-text>
@@ -31,7 +31,7 @@
             </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <v-text-field @blur="$v.f2.nombres.$touch()" :error-messages="erroresNombres" v-model="f2.nombres" label="Nombres"></v-text-field>
+            <v-text-field @blur="$v.f2.nombres.$touch()" autofocus :error-messages="erroresNombres" v-model="f2.nombres" label="Nombres"></v-text-field>
             <v-text-field @keyup.enter="siguiente(2)" @blur="$v.f2.apellidos.$touch()" :error-messages="erroresApellidos" v-model="f2.apellidos" label="Apellidos"></v-text-field>
           </v-card-text>
           <v-card-text>
@@ -143,7 +143,7 @@ export default {
       .substr(0, 10)
   },
   methods: {
-    ...mapMutations(['mostrarOcupado', 'ocultarOcupado', 'mostrarExito', 'mostrarError']),
+    ...mapMutations(['mostrarOcupado', 'ocultarOcupado', 'mostrarExito', 'mostrarError', 'mostrarAdvertencia']),
     ...mapMutations('sesion', ['actualizarUsuario']),
     siguiente(vista) {
       switch (vista) {
@@ -194,7 +194,16 @@ export default {
       }
       catch (error) {
         this.ocultarOcupado()
-        this.mostrarError('Ocurrió un error registrando tu cuenta. Inténtalo más tarde.')
+
+        switch(error.code) {
+          case 'auth/email-already-in-use':
+            this.mostrarAdvertencia('Ya se ha registrado esta dirección de email con anterioridad')
+            break
+
+          default:
+            this.mostrarError('Ocurrió un error registrando tu cuenta. Inténtalo más tarde.')
+            break
+        }
       }
     },
     enter() {
