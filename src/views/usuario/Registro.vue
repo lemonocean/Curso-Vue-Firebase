@@ -83,6 +83,8 @@
 <script>
 import { required, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators'
 import { nombreCompuesto } from '@/utilidades/validaciones'
+import { mapMutations, mapGetters } from 'vuex'
+import { auth } from '@/firebase'
 
 export default {
   data() {
@@ -141,6 +143,8 @@ export default {
       .substr(0, 10)
   },
   methods: {
+    ...mapMutations(['mostrarOcupado', 'ocultarOcupado', 'mostrarExito', 'mostrarError']),
+    ...mapMutations('sesion', ['actualizarUsuario']),
     siguiente(vista) {
       switch (vista) {
         case 1:
@@ -163,10 +167,35 @@ export default {
           break
       }
     },
-    registrar() {
+    async registrar() {
       if (this.$v.fechaNacimiento.$invalid) { return }
 
-      alert('Registrando...')
+      try {
+        this.mostrarOcupado({ titulo: 'Creando Registro', mensaje: 'Estamos registrando tu información...' })
+
+        let cred = await auth.createUserWithEmailAndPassword(this.f1.email, this.f1.password)
+        let uid = cred.user.uid
+
+        let usuario = {
+          uid,
+          userName: 'newton',
+          nombres: this.f2.nombres,
+          apellidos: this.f2.apellidos,
+          sexo: 'M',
+          descripcion: 'Descripción',
+          biografia: 'https://es.wikipedia.org/wiki/Isaac_Newton',
+          fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg'
+        }
+
+        this.ocultarOcupado()
+        this.actualizarUsuario(usuario)
+        this.mostrarExito(this.saludo)
+        this.$router.push( { name: 'home' } )
+      }
+      catch (error) {
+        this.ocultarOcupado()
+        this.mostrarError('Ocurrió un error registrando tu cuenta. Inténtalo más tarde.')
+      }
     },
     enter() {
       if (this.vista == 3 && !this.fechaNacimiento) {
@@ -175,6 +204,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('sesion', ['saludo']),
     erroresEmail() {
       let errores = []
       if (!this.$v.f1.email.$dirty) { return errores }
