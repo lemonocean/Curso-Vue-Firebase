@@ -174,6 +174,9 @@ export default {
         this.mostrarOcupado({ titulo: 'Creando Registro', mensaje: 'Estamos registrando tu información...' })
 
         let cred = await auth.createUserWithEmailAndPassword(this.f1.email, this.f1.password)
+        
+        await auth.currentUser.sendEmailVerification()
+
         let uid = cred.user.uid
 
         let usuario = {
@@ -190,7 +193,7 @@ export default {
         this.ocultarOcupado()
         this.actualizarUsuario(usuario)
         this.mostrarExito(this.saludo)
-        this.$router.push( { name: 'home' } )
+        this.$router.push( { name: 'envio-verificacion-email' } )
       }
       catch (error) {
         this.ocultarOcupado()
