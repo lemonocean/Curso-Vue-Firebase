@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from '@/store'
+import { auth } from '@/firebase'
 
 import Home from './views/Home.vue'
 import NotFound from './views/NotFound.vue'
@@ -71,9 +71,16 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+  let user = auth.currentUser
+
   if(to.matched.some(record => record.meta.autenticado)) {
-    if(store.state.sesion.usuario) {
-      next()
+    if(user) {
+      if(user.providerData[0].providerId == 'password' && !user.emailVerified) {
+        next({ name: 'envio-verificacion-email' })
+      }
+      else {
+        next()
+      }
     }
     else {
       next({ name: 'login' })
