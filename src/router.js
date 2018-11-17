@@ -5,6 +5,7 @@ import { auth } from '@/firebase'
 import Home from './views/Home.vue'
 import NotFound from './views/NotFound.vue'
 
+import AccionesEmail from './views/usuario/AccionesEmail.vue'
 import EnvioVerificacionEmail from './views/usuario/EnvioVerificacionEmail.vue'
 import Login from './views/usuario/Login.vue'
 import Registro from './views/usuario/Registro.vue'
@@ -39,6 +40,11 @@ const router = new Router({
       path: '/sesion/envio-verificacion-email',
       name: 'envio-verificacion-email',
       component: EnvioVerificacionEmail
+    },
+    {
+      path: '/sesion/acciones-email',
+      name: 'acciones-email',
+      component: AccionesEmail
     },
     {
       path: '/usuario/perfil',
