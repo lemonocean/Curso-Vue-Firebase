@@ -17,11 +17,45 @@
           </v-layout>
         </v-card-text>
         <v-card-actions>
+          <v-btn @click="solicitudPassword = true" flat color="secondary">
+            ¿Olvidaste tu contraseña?
+          </v-btn>
+        </v-card-actions>
+        <v-card-actions>
           <v-btn :to="{ name: 'registro' }" flat color="secondary">
             ¿No tienes cuenta? Regístrate.
           </v-btn>
         </v-card-actions>
       </v-card>
+      <v-dialog v-model="solicitudPassword" max-width="400" persistent>
+        <v-card>
+          <v-toolbar color="primary" dark card>
+            <v-toolbar-title>
+              Restablecer Contraseña
+            </v-toolbar-title>
+          </v-toolbar>
+          <v-card-text class="subheading">
+            Ingresa la dirección de email con la cual te registraste.
+          </v-card-text>
+          <v-card-text>
+            <v-text-field label="Email" autofocus v-model="emailEnvio" :error-messages="erroresEmailEnvio" @blur="$v.emailEnvio.$touch()"></v-text-field>
+          </v-card-text>
+          <v-card-text>
+            <v-layout>
+              <v-flex xs6>
+                <v-layout justify-start>
+                  <v-btn @click="solicitudPassword = false">Cancelar</v-btn>
+                </v-layout>
+              </v-flex>
+              <v-flex xs6>
+                <v-layout justify-end>
+                  <v-btn color="secondary" @click="enviarSolicitudPassword" :depressed="$v.emailEnvio.$invalid" :disabled="$v.emailEnvio.$invalid">Enviar</v-btn>
+                </v-layout>
+              </v-flex>
+            </v-layout>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-flex>
   </v-layout>
 </template>
@@ -38,7 +72,9 @@ export default {
       formulario: {
         email: '',
         password: ''
-      }
+      },
+      solicitudPassword: false,
+      emailEnvio: ''
     }
   },
   validations: {
@@ -52,6 +88,10 @@ export default {
         minLength: minLength(6),
         maxLength: maxLength(20)
       }
+    },
+    emailEnvio: {
+      required,
+      email
     }
   },
   methods: {
@@ -103,6 +143,21 @@ export default {
             break
         }
       }
+    },
+    async enviarSolicitudPassword() {
+      this.solicitudPassword = false
+      this.mostrarOcupado({ titulo: 'Enviando Solicitud', mensaje: 'Enviando solicitud de restablecimiento de constraseña...' })
+
+      try {
+        await auth.sendPasswordResetEmail(this.emailEnvio)
+        this.mostrarExito('Se ha enviado la solicitu de restablecimiento de contraseña.')
+      }
+      catch (error) {
+        this.mostrarError('Ocurrió un error enviando la solicitud.')
+      }
+      finally {
+        this.ocultarOcupado()
+      }
     }
   },
   computed: {
@@ -120,6 +175,13 @@ export default {
       if (!this.$v.formulario.password.required) { errores.push('Ingresa tu password.') }
       if (!this.$v.formulario.password.minLength) { errores.push('Ingresa al menos 6 caracteres.') }
       if (!this.$v.formulario.password.maxLength) { errores.push('Ingresa máximo 20 caracteres.') }
+      return errores
+    },
+    erroresEmailEnvio() {
+      let errores = []
+      if (!this.$v.emailEnvio.$dirty) { return errores }
+      if (!this.$v.emailEnvio.required) { errores.push('Ingresa tu email.') }
+      if (!this.$v.emailEnvio.email) { errores.push('Ingresa un email válido.') }
       return errores
     }
   }
