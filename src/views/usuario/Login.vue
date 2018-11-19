@@ -111,26 +111,12 @@ export default {
       this.mostrarOcupado(ocupado)
 
       try {
-        let cred = await auth.signInWithEmailAndPassword(this.formulario.email, this.formulario.password)
+        await auth.signInWithEmailAndPassword(this.formulario.email, this.formulario.password)
 
-        let usuario = {
-          uid: cred.user.uid,
-          userName: 'newton',
-          nombres: 'Isaac',
-          apellidos: 'Newton',
-          sexo: 'M',
-          descripcion: 'Descripción',
-          biografia: 'https://es.wikipedia.org/wiki/Isaac_Newton',
-          fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg'
-        }
-
-        this.ocultarOcupado()
-        this.actualizarUsuario(usuario)
         this.mostrarExito(this.saludo)
         this.$router.push({ name: 'home' })
       }
       catch (error) {
-        this.ocultarOcupado()
 
         switch (error.code) {
           case 'auth/user-not-found':
@@ -142,6 +128,9 @@ export default {
             this.mostrarError('Ocurrió un error validando la información.')
             break
         }
+      }
+      finally {
+        this.ocultarOcupado()
       }
     },
     async enviarSolicitudPassword() {

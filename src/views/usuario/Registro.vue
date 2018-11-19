@@ -173,30 +173,13 @@ export default {
       try {
         this.mostrarOcupado({ titulo: 'Creando Registro', mensaje: 'Estamos registrando tu información...' })
 
-        let cred = await auth.createUserWithEmailAndPassword(this.f1.email, this.f1.password)
-        
+        await auth.createUserWithEmailAndPassword(this.f1.email, this.f1.password)        
         await auth.currentUser.sendEmailVerification()
 
-        let uid = cred.user.uid
-
-        let usuario = {
-          uid,
-          userName: 'newton',
-          nombres: this.f2.nombres,
-          apellidos: this.f2.apellidos,
-          sexo: 'M',
-          descripcion: 'Descripción',
-          biografia: 'https://es.wikipedia.org/wiki/Isaac_Newton',
-          fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg'
-        }
-
-        this.ocultarOcupado()
-        this.actualizarUsuario(usuario)
         this.mostrarExito(this.saludo)
         this.$router.push( { name: 'envio-verificacion-email' } )
       }
-      catch (error) {
-        this.ocultarOcupado()
+      catch (error) {        
 
         switch(error.code) {
           case 'auth/email-already-in-use':
@@ -207,6 +190,9 @@ export default {
             this.mostrarError('Ocurrió un error registrando tu cuenta. Inténtalo más tarde.')
             break
         }
+      }
+      finally {
+        this.ocultarOcupado()
       }
     },
     enter() {

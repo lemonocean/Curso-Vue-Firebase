@@ -118,21 +118,8 @@ export default {
 
       try {
         await auth.confirmPasswordReset(this.actionCode, this.f1.password)
+        await auth.signInWithEmailAndPassword(this.email, this.f1.password)
 
-        let cred = await auth.signInWithEmailAndPassword(this.email, this.f1.password)
-
-        let usuario = {
-          uid: cred.user.uid,
-          userName: 'newton',
-          nombres: 'Isaac',
-          apellidos: 'Newton',
-          sexo: 'M',
-          descripcion: 'Descripción',
-          biografia: 'https://es.wikipedia.org/wiki/Isaac_Newton',
-          fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg'
-        }
-        
-        this.actualizarUsuario(usuario)
         this.mostrarExito(this.saludo + ', tu contraseña ha sido cambiada exitosamente.')
         this.$router.push({ name: 'home' })
       }
