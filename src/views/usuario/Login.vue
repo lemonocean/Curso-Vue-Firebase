@@ -148,9 +148,6 @@ export default {
 
       try {
         await auth.signInWithEmailAndPassword(this.formulario.email, this.formulario.password)
-
-        this.mostrarExito(this.saludo)
-        this.$router.push({ name: 'home' })
       }
       catch (error) {
 

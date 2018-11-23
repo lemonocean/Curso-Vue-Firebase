@@ -119,9 +119,6 @@ export default {
       try {
         await auth.confirmPasswordReset(this.actionCode, this.f1.password)
         await auth.signInWithEmailAndPassword(this.email, this.f1.password)
-
-        this.mostrarExito(this.saludo + ', tu contraseña ha sido cambiada exitosamente.')
-        this.$router.push({ name: 'home' })
       }
       catch(error) {
         this.mostrarError('No fue posible cambiar la contraseña.')
