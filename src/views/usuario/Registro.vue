@@ -15,12 +15,12 @@
             <v-layout justify-center>
               <a @click="siguiente(1, 'facebook')" class="mx-3">
                 <v-avatar tile :size="40">
-                  <img  alt="Ingreso Facebook" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path d='M483.7 0H28.3C12.7 0 0 12.7 0 28.3v455.5C0 499.3 12.7 512 28.3 512h245.2V314H207v-77.5h66.5v-57c0-66.1 40.4-102.1 99.4-102.1 28.3 0 52.5 2.1 59.6 3v69.1h-40.7c-32.1 0-38.3 15.3-38.3 37.6v49.4h76.7l-10 77.5h-66.7v198h130.2c15.6 0 28.3-12.7 28.3-28.3V28.3C512 12.7 499.3 0 483.7 0z' fill='%234267b2'/><path d='M353.5 512V314h66.8l10-77.5h-76.8v-49.4c0-22.4 6.2-37.6 38.3-37.6h40.7V80.4c-7.1-.9-31.4-3-59.6-3-59 0-99.4 36-99.4 102.1v57H207V314h66.5v198h80z' fill='%23fff'/></svg>">
+                  <img alt="Ingreso Facebook" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path d='M483.7 0H28.3C12.7 0 0 12.7 0 28.3v455.5C0 499.3 12.7 512 28.3 512h245.2V314H207v-77.5h66.5v-57c0-66.1 40.4-102.1 99.4-102.1 28.3 0 52.5 2.1 59.6 3v69.1h-40.7c-32.1 0-38.3 15.3-38.3 37.6v49.4h76.7l-10 77.5h-66.7v198h130.2c15.6 0 28.3-12.7 28.3-28.3V28.3C512 12.7 499.3 0 483.7 0z' fill='%234267b2'/><path d='M353.5 512V314h66.8l10-77.5h-76.8v-49.4c0-22.4 6.2-37.6 38.3-37.6h40.7V80.4c-7.1-.9-31.4-3-59.6-3-59 0-99.4 36-99.4 102.1v57H207V314h66.5v198h80z' fill='%23fff'/></svg>">
                 </v-avatar>
               </a>
               <a @click="siguiente(1, 'google')" class="mx-3">
                 <v-avatar tile :size="40">
-                  <img  alt="Ingreso Google" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23ea4335' d='M261.1 0C161 0 74.5 57.4 32.3 141l85.5 66.3c20.1-60.5 76.6-105.5 143.2-105.5 37.6 0 71.3 12.9 97.9 38.3l73.4-73.4C388.1 25.4 330.1 0 261.1 0z'/><path fill='%23fbbc05' d='M117.9 207.4L32.3 141C15 175.6 5.1 214.7 5.1 256s9.9 80.4 27.2 115l85.5-66.3c-5.1-15.4-8-31.8-8-48.6 0-17 3-33.4 8.1-48.7z'/><path fill='%2334a853' d='M347.8 385.7c-22.9 15.4-52.2 24.4-86.7 24.4-66.7 0-123.1-45-143.2-105.5L32.3 371C74.5 454.6 161 512 261.1 512c69.1 0 127.1-22.9 169.4-62l-82.7-64.3z'/><path fill='%234285f4' d='M502.2 209.5H261.1v99h137.8c-5.9 32-24 59.1-51.1 77.3l82.7 64.2c48.4-44.6 76.3-110.2 76.3-188.2.1-18.1-1.5-35.6-4.6-52.3z'/></svg>">
+                  <img alt="Ingreso Google" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23ea4335' d='M261.1 0C161 0 74.5 57.4 32.3 141l85.5 66.3c20.1-60.5 76.6-105.5 143.2-105.5 37.6 0 71.3 12.9 97.9 38.3l73.4-73.4C388.1 25.4 330.1 0 261.1 0z'/><path fill='%23fbbc05' d='M117.9 207.4L32.3 141C15 175.6 5.1 214.7 5.1 256s9.9 80.4 27.2 115l85.5-66.3c-5.1-15.4-8-31.8-8-48.6 0-17 3-33.4 8.1-48.7z'/><path fill='%2334a853' d='M347.8 385.7c-22.9 15.4-52.2 24.4-86.7 24.4-66.7 0-123.1-45-143.2-105.5L32.3 371C74.5 454.6 161 512 261.1 512c69.1 0 127.1-22.9 169.4-62l-82.7-64.3z'/><path fill='%234285f4' d='M502.2 209.5H261.1v99h137.8c-5.9 32-24 59.1-51.1 77.3l82.7 64.2c48.4-44.6 76.3-110.2 76.3-188.2.1-18.1-1.5-35.6-4.6-52.3z'/></svg>">
                 </v-avatar>
               </a>
             </v-layout>
@@ -105,7 +105,7 @@
 import { required, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators'
 import { nombreCompuesto } from '@/utilidades/validaciones'
 import { mapMutations, mapGetters } from 'vuex'
-import { firebase, auth } from '@/firebase'
+import { firebase, auth, db } from '@/firebase'
 
 export default {
   data() {
@@ -193,7 +193,7 @@ export default {
     async registrar() {
       if (this.$v.fechaNacimiento.$invalid) { return }
 
-      switch(this.metodo) {
+      switch (this.metodo) {
         case 'email':
           this.registrarEmail()
           break
@@ -211,15 +211,17 @@ export default {
       try {
         this.mostrarOcupado({ titulo: 'Creando Registro', mensaje: 'Estamos registrando tu información...' })
 
-        await auth.createUserWithEmailAndPassword(this.f1.email, this.f1.password)        
+        let cred = await auth.createUserWithEmailAndPassword(this.f1.email, this.f1.password)
+
+        await this.guardarUsuario(cred.user.uid)
+
         await auth.currentUser.sendEmailVerification()
-
-        this.mostrarExito(this.saludo)
-        this.$router.push( { name: 'envio-verificacion-email' } )
+        
+        this.$router.push({ name: 'envio-verificacion-email' })
       }
-      catch (error) {        
+      catch (error) {
 
-        switch(error.code) {
+        switch (error.code) {
           case 'auth/email-already-in-use':
             this.mostrarAdvertencia('Ya se ha registrado esta dirección de email con anterioridad')
             break
@@ -243,12 +245,12 @@ export default {
       auth.languageCode = 'es_CO'
 
       try {
-        await auth.signInWithPopup(provider)
+        let cred = await auth.signInWithPopup(provider)
 
-        this.mostrarExito(this.saludo)
+        await this.guardarUsuario(cred.user.uid)
         this.$router.push({ name: 'home' })
       }
-      catch(error) {
+      catch (error) {
         this.mostrarError('Ocurrió un error registrando tu cuenta.')
       }
     },
@@ -262,12 +264,12 @@ export default {
       auth.languageCode = 'es_CO'
 
       try {
-        await auth.signInWithPopup(provider)
+        let cred = await auth.signInWithPopup(provider)
 
-        this.mostrarExito(this.saludo)
+        await this.guardarUsuario(cred.user.uid)
         this.$router.push({ name: 'home' })
       }
-      catch(error) {
+      catch (error) {
         this.mostrarError('Ocurrió un error registrando tu cuenta.')
       }
     },
@@ -275,6 +277,26 @@ export default {
       if (this.vista == 3 && !this.fechaNacimiento) {
         this.$refs.calendario.activePicker = 'YEAR'
       }
+    },
+    async guardarUsuario(uid) {
+      let usuario = {
+          uid,
+          userName: 'newton',
+          nombres: this.f2.nombres,
+          apellidos: this.f2.apellidos,
+          fechaNacimiento: new Date(this.fechaNacimiento).toISOString(),
+          sexo: 'M',
+          descripcion: 'Descripción',
+          biografia: 'https://es.wikipedia.org/wiki/Isaac_Newton',
+          fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg'
+        }
+
+        await db.collection('usuarios')
+                .doc(usuario.uid)
+                .set(usuario)
+
+        this.actualizarUsuario(usuario)
+        this.mostrarExito(this.saludo)
     }
   },
   computed: {
