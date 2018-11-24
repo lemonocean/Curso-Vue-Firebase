@@ -9,6 +9,12 @@ export default {
   mutations: {
     actualizarUsuario(state, usuario) {
       state.usuario = usuario
+    },
+    actualizarNombresApellidos(state, payload) {
+      if(!state.usuario) { return }
+
+      state.usuario.nombres = payload.nombres
+      state.usuario.apellidos = payload.apellidos
     }
   },
   actions: {
