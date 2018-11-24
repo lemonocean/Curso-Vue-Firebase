@@ -318,7 +318,6 @@ export default {
           apellidos: this.f2.apellidos,
           fechaNacimiento: new Date(this.fechaNacimiento).toISOString(),
           sexo: 'M',
-          descripcion: 'Descripción',
           biografia: 'https://es.wikipedia.org/wiki/Isaac_Newton',
           fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg'
         }

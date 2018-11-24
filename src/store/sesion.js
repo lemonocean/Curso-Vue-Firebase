@@ -15,6 +15,11 @@ export default {
 
       state.usuario.nombres = payload.nombres
       state.usuario.apellidos = payload.apellidos
+    },
+    actualizarDescripcion(state, descripcion) {
+      if(!state.usuario) { return }
+
+      state.usuario.descripcion = descripcion
     }
   },
   actions: {
