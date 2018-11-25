@@ -26,7 +26,15 @@
             <span v-else>Agrega una descripción</span>
           </div>
         </v-layout>
-        <a :href="usuario.biografia" target="_blank" class="ma-2 link">Biografia</a>
+        <v-layout justify-center>
+          <v-btn @click="editarBiografia" v-if="editando" color="secondary" flat icon small>
+            <v-icon>edit</v-icon>
+          </v-btn>
+          <div class="ma-2">
+            <a v-if="usuario.biografia" :href="usuario.biografia" target="_blank" class="ma-2 link">Biografia</a>
+            <span v-else>Ingresa tu biografía</span>
+          </div>
+        </v-layout>
       </v-card-text>
     </v-card>
 
@@ -86,14 +94,41 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+
+    <!-- Biografía -->
+    <v-dialog v-model="editandoBiografia" max-width="400">
+      <v-card>
+        <v-toolbar color="primary" dark card>
+          <v-toolbar-title>
+            Ingresa tu Biografía
+          </v-toolbar-title>
+        </v-toolbar>
+        <v-card-text>
+          <v-text-field @blur="$v.edicionBiografia.$touch()" autofocus :error-messages="erroresBiografia" v-model="edicionBiografia" label="Biografía"></v-text-field>
+        </v-card-text>
+        <v-card-text>
+          <v-layout>
+            <v-flex xs6>
+              <v-layout justify-start>
+                <v-btn @click="editandoBiografia = false">Cancelar</v-btn>
+              </v-layout>
+            </v-flex>
+            <v-flex xs6>
+              <v-layout justify-end>
+                <v-btn @click="guardarBiografia" :depressed="$v.edicionBiografia.$invalid" :disabled="$v.edicionBiografia.$invalid" color="secondary">Guardar</v-btn>
+              </v-layout>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
 <script>
-import { required, minLength, maxLength } from 'vuelidate/lib/validators'
+import { required, minLength, maxLength, url } from 'vuelidate/lib/validators'
 import { nombreCompuesto } from '@/utilidades/validaciones'
 import { mapState, mapMutations } from 'vuex'
-import store from '@/store'
 import { db } from '@/firebase'
 
 export default {
@@ -106,7 +141,9 @@ export default {
         apellidos: ''
       },
       editandoDescripcion: false,
-      edicionDescripcion: ''
+      edicionDescripcion: '',
+      editandoBiografia: false,
+      edicionBiografia: ''
     }
   },
   validations: {
@@ -126,11 +163,14 @@ export default {
     },
     edicionDescripcion: {
       maxLength: maxLength(300)
+    },
+    edicionBiografia: {
+      url
     }
   },
   methods: {
-    ...mapMutations(['mostrarError', 'mostrarOcupado', 'ocultarOcupado']),
-    ...mapMutations('sesion', ['actualizarNombresApellidos', 'actualizarDescripcion']),
+    ...mapMutations(['mostrarExito', 'mostrarError', 'mostrarOcupado', 'ocultarOcupado']),
+    ...mapMutations('sesion', ['actualizarNombresApellidos', 'actualizarDescripcion', 'actualizarBiografia']),
     editarNombresApellidos() {
       this.f2.nombres = this.usuario.nombres
       this.f2.apellidos = this.usuario.apellidos
@@ -189,6 +229,37 @@ export default {
       finally {
         this.ocultarOcupado()
       }
+    },
+    editarBiografia() {
+      this.edicionBiografia = this.usuario.biografia || ''
+      this.editandoBiografia = true
+    },
+    async guardarBiografia() {
+      if(this.edicionBiografia == this.usuario.biografia) {
+        this.editandoBiografia = false
+        return
+      }
+
+      this.mostrarOcupado({ titulo: 'Actualizando Información', mensaje: 'Estamos actualizando la biografía...' })
+
+      try {
+        await db.collection('usuarios')
+                .doc(this.usuario.uid)
+                .update({ biografia: this.edicionBiografia })
+
+        this.actualizarBiografia(this.edicionBiografia)
+
+        this.editandoBiografia = false
+        this.editando = false
+
+        this.mostrarExito('Se actualizó la biografía correctamente.')
+      }
+      catch (error) {
+        this.mostrarError('Ocurrió un error actualizando tus datos.')
+      }
+      finally {
+        this.ocultarOcupado()
+      }
     }
   },
   computed: {
@@ -215,6 +286,12 @@ export default {
       let errores = []
       if (!this.$v.edicionDescripcion.$dirty) { return errores }
       if (!this.$v.edicionDescripcion.maxLength) { errores.push('Ingresa máximo 300 caracteres.') }
+      return errores
+    },
+    erroresBiografia() {
+      let errores = []
+      if (!this.$v.edicionBiografia.$dirty) { return errores }
+      if (!this.$v.edicionBiografia.url) { errores.push('Ingresa una url válida.') }
       return errores
     }
   }

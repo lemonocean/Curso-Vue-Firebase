@@ -20,6 +20,11 @@ export default {
       if(!state.usuario) { return }
 
       state.usuario.descripcion = descripcion
+    },
+    actualizarBiografia(state, biografia) {
+      if(!state.usuario) { return }
+
+      state.usuario.biografia = biografia
     }
   },
   actions: {
