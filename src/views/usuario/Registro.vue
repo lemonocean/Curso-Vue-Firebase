@@ -90,7 +90,31 @@
               </v-flex>
               <v-flex xs6>
                 <v-layout justify-end>
-                  <v-btn @click="registrar" :depressed="$v.fechaNacimiento.$invalid" :disabled="$v.fechaNacimiento.$invalid" color="secondary">Registrarse</v-btn>
+                  <v-btn @click="siguiente(3)" :depressed="$v.fechaNacimiento.$invalid" :disabled="$v.fechaNacimiento.$invalid" color="secondary">Siguiente</v-btn>
+                </v-layout>
+              </v-flex>
+            </v-layout>
+          </v-card-text>
+        </v-card>
+        <v-card v-if="vista == 4" :key="4" class="elevation-6">
+          <v-toolbar color="primary" dark card>
+            <v-toolbar-title>
+              Ingresa un Nombre de Usuario
+            </v-toolbar-title>
+          </v-toolbar>
+          <v-card-text>
+            <v-text-field @blur="$v.userName.$touch()" autofocus :error-messages="erroresUserName" v-model="userName" label="Nombre de Usuario"></v-text-field>
+          </v-card-text>
+          <v-card-text>
+            <v-layout>
+              <v-flex xs6>
+                <v-layout justify-start>
+                  <v-btn @click="vista--">Atrás</v-btn>
+                </v-layout>
+              </v-flex>
+              <v-flex xs6>
+                <v-layout justify-end>
+                  <v-btn @click="registrar" :depressed="$v.f2.$invalid" :disabled="$v.f2.$invalid" color="secondary">Registrarse</v-btn>
                 </v-layout>
               </v-flex>
             </v-layout>
@@ -102,7 +126,7 @@
 </template>
 
 <script>
-import { required, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators'
+import { required, email, minLength, maxLength, sameAs, alphaNum } from 'vuelidate/lib/validators'
 import { nombreCompuesto } from '@/utilidades/validaciones'
 import { mapMutations, mapGetters } from 'vuex'
 import { firebase, auth, db } from '@/firebase'
@@ -122,7 +146,8 @@ export default {
         apellidos: ''
       },
       fechaNacimiento: null,
-      fechaMaxima: null
+      fechaMaxima: null,
+      userName: ''
     }
   },
   validations: {
@@ -156,6 +181,12 @@ export default {
     },
     fechaNacimiento: {
       required
+    },
+    userName: {
+      required,
+      minLength: minLength(5),
+      maxLength: maxLength(25),
+      alphaNum
     }
   },
   created() {
@@ -194,10 +225,25 @@ export default {
             this.vista++
           }
           break
+
+        case 3:
+          if (this.$v.fechaNacimiento.$invalid) { return }
+
+          this.vista++
+          break
       }
     },
     async registrar() {
-      if (this.$v.fechaNacimiento.$invalid) { return }
+      if (this.$v.userName.$invalid) { return }
+
+      let userNameExistente = await db.collection('userNames')
+                                      .doc(this.userName.toLowerCase())
+                                      .get()
+
+      if(userNameExistente.exists) {
+        this.mostrarAdvertencia(`El nombre de usuario '${this.userName}', ya está tomado, selecciona uno diferente.`)
+        return
+      }
 
       switch (this.metodo) {
         case 'password':
@@ -313,7 +359,6 @@ export default {
     async guardarUsuario(uid) {
       let usuario = {
           uid,
-          userName: 'newton',
           nombres: this.f2.nombres,
           apellidos: this.f2.apellidos,
           fechaNacimiento: new Date(this.fechaNacimiento).toISOString(),
@@ -321,9 +366,17 @@ export default {
           fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg'
         }
 
-        await db.collection('usuarios')
-                .doc(usuario.uid)
-                .set(usuario)
+        let userName = {
+          userName: this.userName,
+          uid
+        }
+
+        let batch = db.batch()
+
+        batch.set(db.collection('usuarios').doc(usuario.uid), usuario)
+        batch.set(db.collection('userNames').doc(this.userName.toLowerCase()), userName)
+
+        await batch.commit()
 
         this.actualizarUsuario(usuario)
         this.mostrarExito(this.saludo)
@@ -368,6 +421,15 @@ export default {
       if (!this.$v.f2.apellidos.minLength) { errores.push('Ingresa al menos 3 caracteres.') }
       if (!this.$v.f2.apellidos.maxLength) { errores.push('Ingresa máximo 20 caracteres.') }
       if (!this.$v.f2.apellidos.nombreCompuesto) { errores.push('Ingresa un apellido válido.') }
+      return errores
+    },
+    erroresUserName() {
+      let errores = []
+      if (!this.$v.userName.$dirty) { return errores }
+      if (!this.$v.userName.required) { errores.push('Ingresa tu un nombre de usuario.') }
+      if (!this.$v.userName.minLength) { errores.push('Ingresa al menos 5 caracteres.') }
+      if (!this.$v.userName.maxLength) { errores.push('Ingresa máximo 25 caracteres.') }
+      if (!this.$v.userName.alphaNum) { errores.push('Ingresa solo letras y números, sin espacios.') }
       return errores
     }
   }
