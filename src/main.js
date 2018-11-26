@@ -15,14 +15,26 @@ Vue.use(Vuelidate)
 auth.onAuthStateChanged(user => {
   if (user) {
     store.dispatch('sesion/iniciarSesion', user.uid)
+    .then(() => {
+      iniciarVue()
+    })
   }
   else {
     store.dispatch('sesion/cerrarSesion')
+    .then(() => {
+      iniciarVue()
+    })
   }
 })
 
-new Vue({
-  store,
-  router,
-  render: h => h(App)
-}).$mount('#app')
+let vue = null
+
+function iniciarVue() {
+  if(!vue) {
+    vue = new Vue({
+      store,
+      router,
+      render: h => h(App)
+    }).$mount('#app')
+  }
+}

@@ -1,7 +1,7 @@
 <template>
   <v-layout text-xs-center align-start justify-center class="mt-5">
     <v-card v-if="usuario" class="elevation-6" max-width="250">
-      <v-btn @click="editando = !editando" color="secondary" class="elevation-1" fab small absolute top right>
+      <v-btn v-if="perfilPropio" @click="editando = !editando" color="secondary" class="elevation-1" fab small absolute top right>
         <v-fade-transition mode="out-in">
           <v-icon v-if="!editando" :key="1">edit</v-icon>
           <v-icon v-else :key="2">close</v-icon>
@@ -128,12 +128,13 @@
 <script>
 import { required, minLength, maxLength, url } from 'vuelidate/lib/validators'
 import { nombreCompuesto } from '@/utilidades/validaciones'
-import { mapState, mapMutations } from 'vuex'
-import { db } from '@/firebase'
+import { mapMutations } from 'vuex'
+import { auth, db } from '@/firebase'
 
 export default {
   data() {
     return {
+      usuario: null,
       editando: false,
       editandoNombresApellidos: false,
       f2: {
@@ -168,9 +169,52 @@ export default {
       url
     }
   },
+  created() {
+    this.consultarUsuario()
+  },
+  watch: {
+    '$route' () {
+      this.consultarUsuario()
+    }
+  },
   methods: {
     ...mapMutations(['mostrarExito', 'mostrarError', 'mostrarOcupado', 'ocultarOcupado']),
     ...mapMutations('sesion', ['actualizarNombresApellidos', 'actualizarDescripcion', 'actualizarBiografia']),
+    async consultarUsuario() {
+      let userNameParametro = this.$route.params.userName.toLowerCase()
+
+      this.mostrarOcupado({ titulo: 'Consultando Información', mensaje: 'Cargando datos...' })
+
+      try {
+        let userNameDoc = await db.collection('userNames')
+                                  .doc(userNameParametro)
+                                  .get()
+
+        if(userNameDoc.exists) {
+          let userName = userNameDoc.data()
+
+          let usuarioDoc = await db.collection('usuarios')
+                                   .doc(userName.uid)
+                                   .get()
+
+          if(usuarioDoc.exists) {
+            this.usuario = usuarioDoc.data()
+          }
+          else {
+            this.$router.push({ name: '404' })
+          }
+        }
+        else {
+          this.$router.push({ name: '404' })
+        }
+      }
+      catch (error) {
+        this.$router.push({ name: '404' })
+      }
+      finally {
+        this.ocultarOcupado()
+      }
+    },
     editarNombresApellidos() {
       this.f2.nombres = this.usuario.nombres
       this.f2.apellidos = this.usuario.apellidos
@@ -263,7 +307,9 @@ export default {
     }
   },
   computed: {
-    ...mapState('sesion', ['usuario']),
+    perfilPropio() {
+      return this.usuario && this.usuario.uid == auth.currentUser.uid
+    },
     erroresNombres() {
       let errores = []
       if (!this.$v.f2.nombres.$dirty) { return errores }

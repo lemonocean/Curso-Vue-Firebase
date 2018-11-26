@@ -359,6 +359,7 @@ export default {
     async guardarUsuario(uid) {
       let usuario = {
           uid,
+          userName: this.userName,
           nombres: this.f2.nombres,
           apellidos: this.f2.apellidos,
           fechaNacimiento: new Date(this.fechaNacimiento).toISOString(),

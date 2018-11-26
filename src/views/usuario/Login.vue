@@ -177,9 +177,6 @@ export default {
 
       try {
         await auth.signInWithPopup(provider)
-
-        this.mostrarExito(this.saludo)
-        this.$router.push({ name: 'home' })
       }
       catch(error) {
         this.mostrarError('Ocurrió un error validando tu información.')
@@ -196,9 +193,6 @@ export default {
 
       try {
         await auth.signInWithPopup(provider)
-
-        this.mostrarExito(this.saludo)
-        this.$router.push({ name: 'home' })
       }
       catch(error) {
         this.mostrarError('Ocurrió un error validando tu información.')

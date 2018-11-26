@@ -47,7 +47,7 @@ const router = new Router({
       component: AccionesEmail
     },
     {
-      path: '/usuario/perfil',
+      path: '/usuario/:userName',
       name: 'perfil',
       component: Perfil,
       meta: {

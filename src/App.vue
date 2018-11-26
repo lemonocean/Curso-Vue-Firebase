@@ -10,7 +10,7 @@
             <v-list-tile-title v-text="'Inicio'"></v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile v-if="usuario" :to="{ name: 'perfil' }">
+        <v-list-tile v-if="usuario" :to="{ name: 'perfil', params: { userName: usuario.userName } }">
           <v-list-tile-action>
             <v-icon>account_circle</v-icon>
           </v-list-tile-action>
@@ -42,8 +42,8 @@
         <span>{{ titulo }}</span>
       </v-toolbar-title>   
       <v-spacer></v-spacer>  
-      <router-link class="nombre" :to="{ name: 'perfil' }">
-        <span v-if="usuario">{{ usuario.nombres }}</span> 
+      <router-link v-if="usuario" class="nombre" :to="{ name: 'perfil', params: { userName: usuario.userName } }">
+        <span>{{ usuario.nombres }}</span> 
       </router-link>
     </v-toolbar>
 
