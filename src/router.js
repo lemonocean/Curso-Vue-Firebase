@@ -11,6 +11,7 @@ import Login from './views/usuario/Login.vue'
 import Registro from './views/usuario/Registro.vue'
 import Perfil from './views/usuario/Perfil.vue'
 
+import CargaInicial from './views/teatro/CargaInicial.vue'
 import Obra from './views/teatro/Obra.vue'
 import Presentacion from './views/teatro/Presentacion.vue'
 
@@ -53,6 +54,11 @@ const router = new Router({
       meta: {
         autenticado: true
       }
+    },
+    {
+      path: '/admin/carga-inicial',
+      name: 'carga-inicial',
+      component: CargaInicial
     },
     {
       path: '/obras/:oid',
