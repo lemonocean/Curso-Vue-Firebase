@@ -7,6 +7,7 @@
 <script>
 import { db } from '@/firebase'
 import { mapMutations } from 'vuex'
+import { generarFormatoFecha } from '@/utilidades/formatos'
 
 export default {
   methods: {
@@ -127,6 +128,47 @@ export default {
         obraElReyLeon.fechas.push(fecha03)
         obraFrozen.fechas.push(fecha04)
         obraAnastasia.fechas.push(fecha05)
+
+        let presentacion01 = {
+          pid: `${obraHamilton.oid}-${teatro.tid}-${generarFormatoFecha(fecha01, '-', true)}`,
+          fecha: fecha01,
+          teatro: { tid: teatro.tid, nombre: teatro.nombre },
+          obra: { oid: obraHamilton.oid, titulo: obraHamilton.titulo }
+        }
+
+        let presentacion02 = {
+          pid: `${obraElReyLeon.oid}-${teatro.tid}-${generarFormatoFecha(fecha02, '-', true)}`,
+          fecha: fecha02,
+          teatro: { tid: teatro.tid, nombre: teatro.nombre },
+          obra: { oid: obraElReyLeon.oid, titulo: obraElReyLeon.titulo }
+        }
+
+        let presentacion03 = {
+          pid: `${obraElReyLeon.oid}-${teatro.tid}-${generarFormatoFecha(fecha03, '-', true)}`,
+          fecha: fecha03,
+          teatro: { tid: teatro.tid, nombre: teatro.nombre },
+          obra: { oid: obraElReyLeon.oid, titulo: obraElReyLeon.titulo }
+        }
+
+        let presentacion04 = {
+          pid: `${obraFrozen.oid}-${teatro.tid}-${generarFormatoFecha(fecha04, '-', true)}`,
+          fecha: fecha04,
+          teatro: { tid: teatro.tid, nombre: teatro.nombre },
+          obra: { oid: obraFrozen.oid, titulo: obraFrozen.titulo }
+        }
+
+        let presentacion05 = {
+          pid: `${obraAnastasia.oid}-${teatro.tid}-${generarFormatoFecha(fecha05, '-', true)}`,
+          fecha: fecha05,
+          teatro: { tid: teatro.tid, nombre: teatro.nombre },
+          obra: { oid: obraAnastasia.oid, titulo: obraAnastasia.titulo }
+        }
+
+        batch.set(db.collection('obras').doc(obraHamilton.oid).collection('presentaciones').doc(presentacion01.pid), presentacion01)
+        batch.set(db.collection('obras').doc(obraElReyLeon.oid).collection('presentaciones').doc(presentacion02.pid), presentacion02)
+        batch.set(db.collection('obras').doc(obraElReyLeon.oid).collection('presentaciones').doc(presentacion03.pid), presentacion03)
+        batch.set(db.collection('obras').doc(obraFrozen.oid).collection('presentaciones').doc(presentacion04.pid), presentacion04)
+        batch.set(db.collection('obras').doc(obraAnastasia.oid).collection('presentaciones').doc(presentacion05.pid), presentacion05)
 
         fecha.setDate(fecha.getDate() + 1)
       }
