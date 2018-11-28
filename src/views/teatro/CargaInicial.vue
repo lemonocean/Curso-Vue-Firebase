@@ -49,7 +49,94 @@ export default {
         ]
       }
 
+      const obraHamilton = {
+        oid: 'hamilton',
+        titulo: 'Hamilton',
+        portada: 'hamilton.png',
+        descripcion: 'Hamilton: An American Musical es un musical sobre la vida de Alexander Hamilton, uno de los padres fundadores de los Estados Unidos; con letras, música y guion de Lin-Manuel Miranda.1​ El espectáculo, inspirado en la biografía de 2004 "Alexander Hamilton" del historiador Ron Chernow, ha logrado un gran éxito en crítica y taquilla.\n\nEl musical debutó en febrero del 2015 en el Teatro Público de Nueva York, hasta agosto del mismo año; cuando fue trasladado al teatro Richard Rodgers del circuito de Broadway, donde logró gran éxito en críticas y taquilla.\n\nEntre sus principales reconocimientos están haber ganado once premios Tony, un Grammy a mejor musical, un Pulitzer a mejor drama y siete premios Drama Desk.',
+        categorias: [
+          { categoria: 'A', precio: 850 },
+          { categoria: 'B', precio: 600 },
+          { categoria: 'C', precio: 500 },
+          { categoria: 'D', precio: 350 },
+        ],
+        fechas: [],
+        activo: true
+      }
+
+      const obraElReyLeon = {
+        oid: 'el-rey-leon',
+        titulo: 'El Rey León',
+        portada: 'el-rey-len.png',
+        descripcion: 'El rey león es un musical basado en la película homónima de Disney de 1994, con libreto de Roger Allers e Irene Mecchi, canciones de Elton John y Tim Rice, y música adicional de Lebo M, Mark Mancina, Jay Rifkin, Julie Taymor y Hans Zimmer. Dirigido por Julie Taymor, el espectáculo está producido por Disney Theatrical y se caracteriza por el empleo de máscaras de animales y marionetas de gran tamaño para representar a los diferentes personajes.',
+        categorias: [
+          { categoria: 'A', precio: 400 },
+          { categoria: 'B', precio: 250 },
+          { categoria: 'C', precio: 200 },
+          { categoria: 'D', precio: 150 },
+        ],
+        fechas: [],
+        activo: true
+      }
+
+      const obraFrozen = {
+        oid: 'frozen',
+        titulo: 'Frozen',
+        portada: 'frozen.png',
+        descripcion: 'Frozen is a musical with music and lyrics by Kristen Anderson-Lopez and Robert Lopez and book by Jennifer Lee based on the 2013 film of the same name. Produced by Disney Theatrical Productions, it had a tryout at the Buell Theatre in Denver, Colorado in August 2017 and premiered on Broadway in March 2018 at the St. James Theatre.',
+        categorias: [
+          { categoria: 'A', precio: 350 },
+          { categoria: 'B', precio: 280 },
+          { categoria: 'C', precio: 190 },
+          { categoria: 'D', precio: 110 },
+        ],
+        fechas: [],
+        activo: true
+      }
+
+      const obraAnastasia = {
+        oid: 'anastasia',
+        titulo: 'Anastasia',
+        portada: 'anastasia.png',
+        descripcion: 'Anastasia es un musical basado en la película de animación homónima de 1997, con libreto de Terrence McNally, música de Stephen Flaherty y letras de Lynn Ahrens. Su trama central gira en torno a la leyenda de la gran duquesa Anastasia Nikoláyevna de Rusia, quien supuestamente escapó de la ejecución de su familia a manos del ejército bolchevique.',
+        categorias: [
+          { categoria: 'A', precio: 350 },
+          { categoria: 'B', precio: 240 },
+          { categoria: 'C', precio: 130 },
+          { categoria: 'D', precio: 90 },
+        ],
+        fechas: [],
+        activo: true
+      }
+
+      let fecha = new Date()
+
+      fecha.setHours(0, 0, 0, 0)
+
+      fecha.setDate(fecha.getDate() - 3)
+
+      for(let i = 1; i <= 10; i++) {
+        let fecha01 = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate(), 15, 15)
+        let fecha02 = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate(), 10, 0)
+        let fecha03 = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate(), 21, 30)
+        let fecha04 = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate(), 17, 0)
+        let fecha05 = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate(), 18, 0)
+
+        obraHamilton.fechas.push(fecha01)
+        obraElReyLeon.fechas.push(fecha02)
+        obraElReyLeon.fechas.push(fecha03)
+        obraFrozen.fechas.push(fecha04)
+        obraAnastasia.fechas.push(fecha05)
+
+        fecha.setDate(fecha.getDate() + 1)
+      }
+
       batch.set(db.collection('teatros').doc(teatro.tid), teatro)
+
+      batch.set(db.collection('obras').doc(obraHamilton.oid), obraHamilton)
+      batch.set(db.collection('obras').doc(obraElReyLeon.oid), obraElReyLeon)
+      batch.set(db.collection('obras').doc(obraFrozen.oid), obraFrozen)
+      batch.set(db.collection('obras').doc(obraAnastasia.oid), obraAnastasia)
 
       this.mostrarOcupado({ titulo: 'Cargando Datos', mensaje: 'Cargando datos...' })
 

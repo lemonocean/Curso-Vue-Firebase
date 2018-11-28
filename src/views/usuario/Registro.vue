@@ -362,7 +362,7 @@ export default {
           userName: this.userName,
           nombres: this.f2.nombres,
           apellidos: this.f2.apellidos,
-          fechaNacimiento: new Date(this.fechaNacimiento), //.toISOString() Esta parte fue un error reemplazando algún string. No se debe convertir, porque almacena un string, y no una fecha.
+          fechaNacimiento: new Date(this.fechaNacimiento),
           sexo: 'M',
           fotoPerfil: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg/220px-Sir_Isaac_Newton_%281643-1727%29.jpg'
         }
