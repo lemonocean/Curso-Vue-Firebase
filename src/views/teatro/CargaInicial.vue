@@ -68,7 +68,7 @@ export default {
       const obraElReyLeon = {
         oid: 'el-rey-leon',
         titulo: 'El Rey León',
-        portada: 'el-rey-len.png',
+        portada: 'el-rey-leon.png',
         descripcion: 'El rey león es un musical basado en la película homónima de Disney de 1994, con libreto de Roger Allers e Irene Mecchi, canciones de Elton John y Tim Rice, y música adicional de Lebo M, Mark Mancina, Jay Rifkin, Julie Taymor y Hans Zimmer. Dirigido por Julie Taymor, el espectáculo está producido por Disney Theatrical y se caracteriza por el empleo de máscaras de animales y marionetas de gran tamaño para representar a los diferentes personajes.',
         categorias: [
           { categoria: 'A', precio: 400 },
