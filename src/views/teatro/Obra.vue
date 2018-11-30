@@ -1,49 +1,78 @@
 <template>
   <v-layout justify-center text-xs-center>
-    <v-flex v-if="obra" xs12 sm6 md4 lg3>
-      <div class="obra-titulo">
-        <h1>{{ obra.titulo }}</h1>
-      </div>
-      <v-card class="elevation-2 ma-3">
-        <v-img :src="obra.portada"></v-img>
-      </v-card>
-      <v-btn :to="{ name: 'presentacion', params: { oid: p.obra.oid, tid: p.teatro.tid, fecha: p.fecha } }" v-for="p in obra.presentaciones" :key="p.pid">
-        {{ `${p.teatro.nombre} - ${p.fecha}` }}
-      </v-btn>
+    <v-flex v-if="obra" xs12 sm10 md12 lg8>
+      <h4 class="display-1 secondary--text mt-1">¡Reserva tus entradas para</h4>
+      <h2 class="display-3 secondary--text mb-3">{{ obra.titulo }}!</h2>     
+      <v-layout wrap align-center>
+        <v-flex xs12 md6>
+          <v-card class="ma-3">
+            <v-img :src="require(`@/assets/obras/${obra.portada}`)"></v-img>
+            <v-card-text class="subheading font-italic text-xs-justify">{{ obra.descripcion }}</v-card-text>
+          </v-card>
+        </v-flex>
+        <v-flex xs12 md6>
+          <v-card class="ma-3">
+            <v-date-picker
+              class="elevation-0"
+              v-model="fecha"
+              full-width
+            ></v-date-picker>
+            <v-card-text>
+
+            </v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
 
-import { mapState } from 'vuex'
+import { db } from '@/firebase'
+import { mapMutations } from 'vuex'
 
 export default {
   data() {
     return {
-      obra: null
+      obra: null,
+      fecha: null
     }
   },
-  computed: {
-    ...mapState('teatro', ['obras'])
+  methods: {
+    ...mapMutations(['mostrarError']),
+    async consultarObra() {
+      let oid = this.$route.params.oid
+
+      try {
+        let doc = await db.collection('obras')
+                          .doc(oid)
+                          .get()
+
+        if(doc.exists) {
+          this.obra = doc.data()
+        }
+      }
+      catch (error) {
+
+      }
+      finally {
+        if (!this.obra) {
+          this.$router.push({ name: '404' })
+        }
+      }
+    }
   },
   created() {
-    let oid = this.$route.params.oid
-
-    this.obra = this.obras.find(o => o.oid == oid)
-
-    if(!this.obra) {
-      this.$router.push({ name: '404' })
-    }
+    this.fecha = new Date().toISOString().substring(0, 10)
+    this.consultarObra()
   }
 }
 </script>
 
 <style>
-
 .obra-titulo {
   font-size: 1.5rem;
   color: #553f75;
 }
-
 </style>
