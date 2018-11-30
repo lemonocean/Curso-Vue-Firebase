@@ -16,6 +16,9 @@
               class="elevation-0"
               v-model="fecha"
               full-width
+              locale="es-co"
+              :min="fechaMinima"
+              :max="fechaMaxima"
             ></v-date-picker>
             <v-card-text>
 
@@ -31,12 +34,16 @@
 
 import { db } from '@/firebase'
 import { mapMutations } from 'vuex'
+import { generarFormatoFecha } from '@/utilidades/formatos'
 
 export default {
   data() {
     return {
       obra: null,
-      fecha: null
+      fecha: null,
+      fechaActual: new Date(),
+      fechaMinima: null,
+      fechaMaxima: null
     }
   },
   methods: {
@@ -51,6 +58,21 @@ export default {
 
         if(doc.exists) {
           this.obra = doc.data()
+
+          if (this.obra.fechas && this.obra.fechas.length > 0) {
+            let fechasObra = this.obra.fechas.map(timestamp => {
+              return timestamp.toDate()
+            })
+
+            fechasObra.sort((a, b) => { return a - b })
+
+            let fechaMinimaVigente = fechasObra.find(f => f >= this.fechaActual)
+
+            if (fechaMinimaVigente) {
+              this.fechaMinima = generarFormatoFecha(fechaMinimaVigente, '-')
+              this.fechaMaxima = generarFormatoFecha(fechasObra[fechasObra.length - 1], '-')
+            }
+          }
         }
       }
       catch (error) {
