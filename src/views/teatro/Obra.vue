@@ -32,7 +32,7 @@
 
                     <v-list-tile-content class="ml-3">
                       <v-list-tile-title>{{ presentacion.fecha }}</v-list-tile-title>
-                      <v-list-tile-sub-title>{{ presentacion.lugar }}</v-list-tile-sub-title>
+                      <v-list-tile-sub-title>{{ presentacion.pid }}</v-list-tile-sub-title>
                     </v-list-tile-content>
                   </v-list-tile>
                 </v-list>
@@ -60,13 +60,15 @@ export default {
       fechaMinima: null,
       fechaMaxima: null,
       consultandoHorarios: false,
-      presentaciones: []
+      presentaciones: [],
+      zonaHoraria: -5
     }
   },
   methods: {
     ...mapMutations(['mostrarError']),
     async consultarHorarios() {
       let fechaInicial = new Date(this.fecha)
+      fechaInicial.setHours(fechaInicial.getHours() - this.zonaHoraria)
 
       let fechaFinal = new Date(fechaInicial)
       fechaFinal.setDate(fechaFinal.getDate() + 1)
@@ -84,6 +86,7 @@ export default {
         this.presentaciones = resultado.docs.map(doc => {
           let presentacion = doc.data()
           let fechaPresentacion = presentacion.fecha.toDate()
+          fechaPresentacion.setHours(fechaPresentacion.getHours() + fechaPresentacion.getTimezoneOffset() / 60 + this.zonaHoraria)
 
           return {
             pid: presentacion.pid,
@@ -123,12 +126,15 @@ export default {
             if (fechaMinimaVigente) {
               this.fechaMinima = generarFormatoFecha(fechaMinimaVigente, '-')
               this.fechaMaxima = generarFormatoFecha(fechasObra[fechasObra.length - 1], '-')
+
+              this.fecha = this.fechaMinima
+              this.consultarHorarios()
             }
           }
         }
       }
       catch (error) {
-
+        this.mostrarError('Ocurrió un error consultando la obra.')
       }
       finally {
         if (!this.obra) {
@@ -138,7 +144,6 @@ export default {
     }
   },
   created() {
-    this.fecha = new Date().toISOString().substring(0, 10)
     this.consultarObra()
   }
 }
