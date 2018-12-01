@@ -21,6 +21,8 @@
               :max="fechaMaxima"
               @change="consultarHorarios"
               :allowed-dates="validarFecha"
+              :events="fechasActivas"
+              :event-color="f => f < fechaActualTexto ? 'grey lighten-1' : 'green darken-1'"
             ></v-date-picker>
             <v-card-text>
               <v-progress-linear v-if="consultandoHorarios" :indeterminate="true"></v-progress-linear>
@@ -33,7 +35,7 @@
 
                     <v-list-tile-content class="ml-3">
                       <v-list-tile-title>{{ presentacion.fecha }}</v-list-tile-title>
-                      <v-list-tile-sub-title>{{ presentacion.pid }}</v-list-tile-sub-title>
+                      <v-list-tile-sub-title>{{ presentacion.lugar }}</v-list-tile-sub-title>
                     </v-list-tile-content>
                   </v-list-tile>
                 </v-list>
@@ -58,6 +60,7 @@ export default {
       obra: null,
       fecha: null,
       fechaActual: new Date(),
+      fechaActualTexto: generarFormatoFecha(new Date(), '-'),
       fechaMinima: null,
       fechaMaxima: null,
       consultandoHorarios: false,
@@ -70,7 +73,7 @@ export default {
     ...mapMutations(['mostrarError']),
     validarFecha(fecha) {
       if (!this.fechasActivas) return false
-      if (fecha < this.fechaActual) return false
+      if (fecha < this.fechaActualTexto) return false
       return this.fechasActivas.indexOf(fecha) !== -1
     },
     async consultarHorarios() {
@@ -163,10 +166,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.obra-titulo {
-  font-size: 1.5rem;
-  color: #553f75;
-}
-</style>
