@@ -20,9 +20,10 @@
               :min="fechaMinima"
               :max="fechaMaxima"
               @change="consultarHorarios"
+              :allowed-dates="validarFecha"
             ></v-date-picker>
             <v-card-text>
-              <v-progress-linear v-if="consultandoHorarios" indeterminate="true"></v-progress-linear>
+              <v-progress-linear v-if="consultandoHorarios" :indeterminate="true"></v-progress-linear>
               <v-layout v-else justify-center text-xs-center>
                 <v-list two-line>
                   <v-list-tile v-for="(presentacion, index) in presentaciones" :key="index">
@@ -61,11 +62,17 @@ export default {
       fechaMaxima: null,
       consultandoHorarios: false,
       presentaciones: [],
-      zonaHoraria: -5
+      zonaHoraria: -5,
+      fechasActivas: null
     }
   },
   methods: {
     ...mapMutations(['mostrarError']),
+    validarFecha(fecha) {
+      if (!this.fechasActivas) return false
+      if (fecha < this.fechaActual) return false
+      return this.fechasActivas.indexOf(fecha) !== -1
+    },
     async consultarHorarios() {
       let fechaInicial = new Date(this.fecha)
       fechaInicial.setHours(fechaInicial.getHours() - this.zonaHoraria)
@@ -116,7 +123,9 @@ export default {
 
           if (this.obra.fechas && this.obra.fechas.length > 0) {
             let fechasObra = this.obra.fechas.map(timestamp => {
-              return timestamp.toDate()
+              let fecha = timestamp.toDate()
+              fecha.setHours(fecha.getHours() + fecha.getTimezoneOffset() / 60 + this.zonaHoraria)
+              return fecha
             })
 
             fechasObra.sort((a, b) => { return a - b })
@@ -126,6 +135,12 @@ export default {
             if (fechaMinimaVigente) {
               this.fechaMinima = generarFormatoFecha(fechaMinimaVigente, '-')
               this.fechaMaxima = generarFormatoFecha(fechasObra[fechasObra.length - 1], '-')
+
+              this.fechasActivas = fechasObra.map(fecha => {
+                return generarFormatoFecha(fecha, '-')
+              })
+
+              this.fechasActivas = [...new Set(this.fechasActivas)]
 
               this.fecha = this.fechaMinima
               this.consultarHorarios()
