@@ -31,4 +31,19 @@ const generarFormatoFecha = (fecha, separador, incluirHora) => {
   return formato
 }
 
-export { generarFormatoFecha }
+const generarFormatoHora = fecha => {
+  let hh = fecha.getHours().toString()
+  let mm = fecha.getMinutes().toString()
+
+  if (hh.length == 1) {
+    hh = '0' + hh
+  }
+
+  if (mm.length == 1) {
+    mm = '0' + mm
+  }
+  
+  return hh + ':' + mm
+}
+
+export { generarFormatoFecha, generarFormatoHora }

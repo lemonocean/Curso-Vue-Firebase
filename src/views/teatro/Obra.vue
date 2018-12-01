@@ -19,9 +19,24 @@
               locale="es-co"
               :min="fechaMinima"
               :max="fechaMaxima"
+              @change="consultarHorarios"
             ></v-date-picker>
             <v-card-text>
+              <v-progress-linear v-if="consultandoHorarios" indeterminate="true"></v-progress-linear>
+              <v-layout v-else justify-center text-xs-center>
+                <v-list two-line>
+                  <v-list-tile v-for="(presentacion, index) in presentaciones" :key="index">
+                    <v-list-tile-action>
+                      <v-btn color="secondary" :to="{ path: presentacion.url }" >Reservar</v-btn>
+                    </v-list-tile-action>
 
+                    <v-list-tile-content class="ml-3">
+                      <v-list-tile-title>{{ presentacion.fecha }}</v-list-tile-title>
+                      <v-list-tile-sub-title>{{ presentacion.lugar }}</v-list-tile-sub-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                </v-list>
+              </v-layout>
             </v-card-text>
           </v-card>
         </v-flex>
@@ -34,7 +49,7 @@
 
 import { db } from '@/firebase'
 import { mapMutations } from 'vuex'
-import { generarFormatoFecha } from '@/utilidades/formatos'
+import { generarFormatoFecha, generarFormatoHora } from '@/utilidades/formatos'
 
 export default {
   data() {
@@ -43,11 +58,48 @@ export default {
       fecha: null,
       fechaActual: new Date(),
       fechaMinima: null,
-      fechaMaxima: null
+      fechaMaxima: null,
+      consultandoHorarios: false,
+      presentaciones: []
     }
   },
   methods: {
     ...mapMutations(['mostrarError']),
+    async consultarHorarios() {
+      let fechaInicial = new Date(this.fecha)
+
+      let fechaFinal = new Date(fechaInicial)
+      fechaFinal.setDate(fechaFinal.getDate() + 1)
+
+      try {
+        this.consultandoHorarios = true
+
+        let resultado = await db.collection('obras')
+                                .doc(this.obra.oid)
+                                .collection('presentaciones')
+                                .where('fecha', '>=', fechaInicial)
+                                .where('fecha', '<', fechaFinal)
+                                .get()
+
+        this.presentaciones = resultado.docs.map(doc => {
+          let presentacion = doc.data()
+          let fechaPresentacion = presentacion.fecha.toDate()
+
+          return {
+            pid: presentacion.pid,
+            fecha: `${generarFormatoFecha(fechaPresentacion, '/')} ${generarFormatoHora(fechaPresentacion)}`,
+            lugar: presentacion.teatro.nombre,
+            url: `/${this.obra.oid}/${presentacion.teatro.tid}/${generarFormatoFecha(fechaPresentacion, '-', true)}`
+          }
+        })
+      }
+      catch (error) {
+        this.mostrarError('Ocurrió un error consultando los horarios para la fecha seleccionada.')
+      }
+      finally {
+        this.consultandoHorarios = false
+      }
+    },
     async consultarObra() {
       let oid = this.$route.params.oid
 
