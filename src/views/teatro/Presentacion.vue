@@ -8,10 +8,11 @@
       </v-layout>
       <v-divider></v-divider>
       <v-layout column justify-center my-3>
-        <v-card v-for="asiento in asientos" :key="asiento.aid">
-          <v-icon :color="asiento.color">lens</v-icon>
-          <span>{{ asiento.descripcion + ': $ ' + asiento.precio }}</span>
-        </v-card>
+        <div class="asientos">
+          <v-card v-for="asiento in asientos" :key="asiento.aid" :style="'grid-column: ' + asiento.x + '; grid-row: ' + asiento.y + ';'">
+            <v-icon :color="asiento.color">lens</v-icon>
+          </v-card>
+        </div>
       </v-layout>
     </v-layout>
   </v-layout>
@@ -121,3 +122,15 @@ export default {
   }
 }
 </script>
+
+<style>
+
+.asientos {
+  display: grid;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+  justify-content: center;
+}
+
+</style>
