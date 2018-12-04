@@ -1,5 +1,5 @@
 <template>
-  <v-layout justify-center align-start>
+  <v-layout v-resize="onResize" justify-center align-start>
     <v-layout v-if="presentacion && asientos" column>
       <v-layout column justify-center text-xs-center my-3 class="secondary--text">
         <h3 class="display-2">{{ obra.titulo }}</h3>
@@ -9,8 +9,8 @@
       <v-divider></v-divider>
       <v-layout column justify-center my-3>
         <div class="asientos">
-          <v-card v-for="asiento in asientos" :key="asiento.aid" :style="'grid-column: ' + asiento.x + '; grid-row: ' + asiento.y + ';'">
-            <v-icon :color="asiento.color">lens</v-icon>
+          <v-card v-for="asiento in asientos" :key="asiento.aid" :color="asiento.color" class="asiento" :style="'grid-column: ' + asiento.x + '; grid-row: ' + asiento.y + ';'">
+            <v-icon color="white" :size="size">add</v-icon>
           </v-card>
         </div>
       </v-layout>
@@ -30,7 +30,8 @@ export default {
       teatro: null,
       obra: null,
       presentacion: null,
-      asientos: null
+      asientos: null,
+      size: 27
     }
   },
   computed: {
@@ -118,6 +119,29 @@ export default {
       finally {
         this.ocultarOcupado()
       }
+    },
+    onResize() {
+      if (window.innerWidth < 400) {
+        this.size = 7
+      }
+      else if (window.innerWidth < 500) {
+        this.size = 9
+      }
+      else if (window.innerWidth < 600) {
+        this.size = 12
+      }
+      else if (window.innerWidth < 900) {
+        this.size = 13
+      }
+      else if (window.innerWidth < 1000) {
+        this.size = 19
+      }
+      else if (window.innerWidth < 1200) {
+        this.size = 24
+      }
+      else {
+        this.size = 27
+      }
     }
   }
 }
@@ -131,6 +155,66 @@ export default {
   align-content: center;
   justify-items: center;
   justify-content: center;
+  grid-gap: 12px;
+}
+
+.asiento {
+  display: grid;
+  padding: 10px;
+  border-top-left-radius: 20%;
+  border-top-right-radius: 20%;
+  border-bottom-left-radius: 40%;
+  border-bottom-right-radius: 40%;
+}
+
+@media only screen and (max-width: 1200px) {
+  .asientos {
+    grid-gap: 6px;
+  }
+
+  .asiento {
+    padding: 8px;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .asientos {
+    grid-gap: 8px;
+  }
+
+  .asiento {
+    padding: 6px;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .asientos {
+    grid-gap: 10px;
+  }
+
+  .asiento {
+    padding: 6px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .asientos {
+    grid-gap: 10px;
+  }
+
+  .asiento {
+    padding: 4px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .asientos {
+    grid-gap: 4px;
+  }
+
+  .asiento {
+    padding: 3px;
+  }
 }
 
 </style>
