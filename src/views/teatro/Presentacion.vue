@@ -8,6 +8,33 @@
       </v-layout>
       <v-divider></v-divider>
       <v-layout justify-center my-3>
+        <v-flex :shrink="true" class="mr-3">
+          <v-layout>
+            <v-icon color="grey darken-3" :size="22">add</v-icon>
+            <span class="ml-2">Asiento Disponible</span>
+          </v-layout>
+          <v-layout>
+            <v-icon color="grey darken-3" :size="22">person</v-icon>
+            <span class="ml-2">Asiento Ocupado</span>
+          </v-layout>
+          <v-layout>
+            <v-icon color="grey darken-3" :size="22">check_circle</v-icon>
+            <span class="ml-2">Asiento Seleccionado</span>
+          </v-layout>
+          <v-layout>
+            <v-icon color="grey darken-3" :size="22">monetization_on</v-icon>
+            <span class="ml-2">Asiento Pagado</span>
+          </v-layout>
+        </v-flex>
+        <v-flex :shrink="true" class="ml-3">
+          <div v-for="categoria in categorias" :key="categoria.precio">
+            <v-icon :color="categoria.color" :size="22">lens</v-icon>
+            <span class="ml-2">$ {{ categoria.precio }}</span>
+          </div>
+        </v-flex>
+      </v-layout>
+      <v-divider></v-divider>
+      <v-layout justify-center my-3>
         <v-card color="transparent" class="elevation-0">
           <v-layout justify-center class="escenario">
             <span class="headline">Escenario</span>
@@ -35,6 +62,7 @@ export default {
       teatro: null,
       obra: null,
       presentacion: null,
+      categorias: null,
       asientos: null,
       size: 27
     }
@@ -101,6 +129,13 @@ export default {
           this.$router.push({ name: '404' })
           return
         }
+
+        this.categorias = this.teatro.categorias.map(c => {
+          return {
+            color: c.color,
+            precio: this.obra.categorias.find(item => item.categoria == c.categoria).precio
+          }
+        })
 
         this.asientos = this.teatro.asientos.map(asiento => {
           let precio = this.obra.categorias.find(item => item.categoria == asiento.categoria).precio
