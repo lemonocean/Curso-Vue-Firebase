@@ -7,12 +7,17 @@
         <h5 class="headline">{{ fechaPresentacion }}</h5>
       </v-layout>
       <v-divider></v-divider>
-      <v-layout column justify-center my-3>
-        <div class="asientos">
-          <v-card v-for="asiento in asientos" :key="asiento.aid" :color="asiento.color" class="asiento" :style="'grid-column: ' + asiento.x + '; grid-row: ' + asiento.y + ';'">
-            <v-icon color="white" :size="size">add</v-icon>
-          </v-card>
-        </div>
+      <v-layout justify-center my-3>
+        <v-card color="transparent" class="elevation-0">
+          <v-layout justify-center class="escenario">
+            <span class="headline">Escenario</span>
+          </v-layout>
+          <div class="asientos">
+            <v-card v-for="asiento in asientos" :key="asiento.aid" :color="asiento.color" class="asiento" :style="'grid-column: ' + asiento.x + '; grid-row: ' + asiento.y + ';'">
+              <v-icon color="white" :size="size">add</v-icon>
+            </v-card>
+          </div>
+        </v-card>
       </v-layout>
     </v-layout>
   </v-layout>
@@ -148,6 +153,18 @@ export default {
 </script>
 
 <style>
+
+.escenario {
+  color: #444;
+  border-color: #9e9e9e;
+  border-style: solid;
+  border-width: 1px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+  margin-bottom: 20px;
+}
 
 .asientos {
   display: grid;
