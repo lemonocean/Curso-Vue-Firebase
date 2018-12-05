@@ -40,7 +40,7 @@
             <span class="headline">Escenario</span>
           </v-layout>
           <div class="asientos">
-            <v-card v-for="asiento in asientos" :key="asiento.aid" :color="obtenerColorAsiento(asiento.estado, asiento.color)" class="asiento" :class="aplicarCssAsiento(asiento.estado)" :style="'grid-column: ' + asiento.x + '; grid-row: ' + asiento.y + ';'">
+            <v-card @click.native="seleccionarAsiento(asiento)" v-for="asiento in asientos" :key="asiento.aid" :color="obtenerColorAsiento(asiento.estado, asiento.color)" class="asiento" :class="aplicarCssAsiento(asiento.estado)" :style="'grid-column: ' + asiento.x + '; grid-row: ' + asiento.y + ';'">
               <v-icon v-if="!asiento.cambiandoEstado" color="white" :size="size">{{obtenerIconoEstado(asiento.estado)}}</v-icon>
               <v-progress-circular v-else indeterminate :size="size" color="white"></v-progress-circular>
             </v-card>
@@ -65,6 +65,8 @@ export default {
       presentacion: null,
       categorias: null,
       asientos: null,
+      seleccionados: [],
+      totalSeleccionados: 0,
       size: 27
     }
   },
@@ -161,6 +163,46 @@ export default {
       }
       finally {
         this.ocultarOcupado()
+      }
+    },
+    async seleccionarAsiento(asiento) {
+      if (asiento.estado == 'ocupado' || asiento.estado == 'pagado' || asiento.cambiandoEstado) {
+        return
+      }
+
+      asiento.cambiandoEstado = true
+
+      if (asiento.estado == 'disponible') {
+        let reserva = {
+          rid: asiento.aid,
+          x: asiento.x,
+          y: asiento.y,
+          fecha: new Date(),
+          usuario: {
+            uid: this.usuario.uid,
+            nombres: this.usuario.nombres,
+            apellidos: this.usuario.apellidos
+          },
+          estado: 'seleccionado'
+        }
+
+        try {
+          await db.collection('obras')
+                  .doc(this.obra.oid)
+                  .collection('presentaciones')
+                  .doc(this.presentacion.pid)
+                  .collection('reservas')
+                  .doc(reserva.rid)
+                  .set(reserva)
+
+          asiento.estado = 'seleccionado'
+        }
+        catch (error) {
+          this.mostrarError('Ocurrió un error efectuando la reserva. Inténtalo más tarde.')
+        }
+        finally {
+          asiento.cambiandoEstado = false
+        }
       }
     },
     onResize() {
