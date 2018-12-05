@@ -40,8 +40,9 @@
             <span class="headline">Escenario</span>
           </v-layout>
           <div class="asientos">
-            <v-card v-for="asiento in asientos" :key="asiento.aid" :color="asiento.color" class="asiento" :style="'grid-column: ' + asiento.x + '; grid-row: ' + asiento.y + ';'">
-              <v-icon color="white" :size="size">add</v-icon>
+            <v-card v-for="asiento in asientos" :key="asiento.aid" :color="obtenerColorAsiento(asiento.estado, asiento.color)" class="asiento" :class="aplicarCssAsiento(asiento.estado)" :style="'grid-column: ' + asiento.x + '; grid-row: ' + asiento.y + ';'">
+              <v-icon v-if="!asiento.cambiandoEstado" color="white" :size="size">{{obtenerIconoEstado(asiento.estado)}}</v-icon>
+              <v-progress-circular v-else indeterminate :size="size" color="white"></v-progress-circular>
             </v-card>
           </div>
         </v-card>
@@ -148,7 +149,9 @@ export default {
             x: asiento.x,
             y: asiento.y,
             precio,
-            color
+            color,
+            estado: 'disponible',
+            cambiandoEstado: false
           }
         })
       }
@@ -181,6 +184,39 @@ export default {
       }
       else {
         this.size = 27
+      }
+    },
+    obtenerIconoEstado (estado) {
+      switch (estado) {
+        case 'disponible':
+          return 'add'
+        case 'seleccionado':
+          return 'check_circle'
+        case 'ocupado':
+          return 'person'
+        case 'pagado':
+          return 'monetization_on'
+      }
+    },
+    obtenerColorAsiento (estado, color) {
+      switch (estado) {
+        case 'disponible':
+          return color
+        case 'seleccionado':
+          return '#C0CA33'
+        case 'ocupado':
+        case 'pagado':
+          return '#E0E0E0'
+      }
+    },
+    aplicarCssAsiento (estado) {
+      switch (estado) {
+        case 'disponible':
+        case 'seleccionado':
+          return 'asiento-cursor-pointer elevation-2'
+        case 'ocupado':
+        case 'pagado':
+          return 'asiento-cursor-not-allowed elevation-0'
       }
     }
   }
@@ -217,6 +253,14 @@ export default {
   border-top-right-radius: 20%;
   border-bottom-left-radius: 40%;
   border-bottom-right-radius: 40%;
+}
+
+.asiento-cursor-pointer {
+  cursor: pointer;
+}
+
+.asiento-cursor-not-allowed {
+  cursor: not-allowed;
 }
 
 @media only screen and (max-width: 1200px) {
