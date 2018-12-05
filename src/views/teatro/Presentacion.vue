@@ -34,6 +34,23 @@
         </v-flex>
       </v-layout>
       <v-divider></v-divider>
+      <v-layout column justify-center text-xs-center my-3 v-if="seleccionados && seleccionados.length > 0">
+        <span class="subheading font-weight-bold">Tu Reserva</span>
+        <v-flex mt-3>
+          <v-slide-y-transition group>
+            <v-chip :close="!asiento.cambiandoEstado" color='#C0CA33' text-color="white" v-for="asiento in seleccionados" :key="asiento.aid">
+              <v-avatar>
+                <v-icon>check_circle</v-icon>
+              </v-avatar>
+              {{ asiento.descripcion }}: $ {{ asiento.precio }}
+            </v-chip>
+          </v-slide-y-transition>
+        </v-flex>
+        <v-layout justify-center mt-2>
+          <span class="subheading">Total: $ {{ totalSeleccionados.toLocaleString() }}</span>
+        </v-layout>
+      </v-layout>
+      <v-divider v-if="seleccionados && seleccionados.length > 0"></v-divider>
       <v-layout justify-center my-3>
         <v-card color="transparent" class="elevation-0">
           <v-layout justify-center class="escenario">
@@ -156,6 +173,8 @@ export default {
             cambiandoEstado: false
           }
         })
+
+        this.consultarReservas()
       }
       catch (error) {
         this.mostrarError('Ocurrió un error consultando la información de la presentación.')
@@ -163,6 +182,37 @@ export default {
       }
       finally {
         this.ocultarOcupado()
+      }
+    },
+    async consultarReservas() {
+      try {
+        let resultado = await db.collection('obras')
+                                .doc(this.obra.oid)
+                                .collection('presentaciones')
+                                .doc(this.presentacion.pid)
+                                .collection('reservas')
+                                .get()
+
+        resultado.docs.forEach(doc => {
+          let reserva = doc.data()
+
+          let asiento = this.asientos.find(asiento => asiento.aid == reserva.rid)
+
+          if (reserva.usuario.uid == this.usuario.uid) {
+            asiento.estado = reserva.estado
+
+            if (asiento.estado == 'seleccionado') {
+              this.seleccionados.push(asiento)
+              this.totalSeleccionados += asiento.precio
+            }
+          }
+          else {
+            asiento.estado = 'ocupado'
+          }
+        })
+      }
+      catch (error) {
+        this.mostrarError('Ocurrió un error consultando la disponibilidad de los asientos.')
       }
     },
     async seleccionarAsiento(asiento) {
@@ -196,6 +246,8 @@ export default {
                   .set(reserva)
 
           asiento.estado = 'seleccionado'
+          this.seleccionados.push(asiento)
+          this.totalSeleccionados += asiento.precio
         }
         catch (error) {
           this.mostrarError('Ocurrió un error efectuando la reserva. Inténtalo más tarde.')
