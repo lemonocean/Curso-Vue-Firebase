@@ -34,23 +34,42 @@
         </v-flex>
       </v-layout>
       <v-divider></v-divider>
-      <v-layout column justify-center text-xs-center my-3 v-if="seleccionados && seleccionados.length > 0">
-        <span class="subheading font-weight-bold">Tu Reserva</span>
-        <v-flex mt-3>
-          <v-slide-y-transition group hide-on-leave>
-            <v-chip @input="seleccionarAsiento(asiento)" :close="!asiento.cambiandoEstado" :color="asiento.cambiandoEstado ? '#D32F2F' : '#C0CA33'" text-color="white" v-for="asiento in seleccionados" :key="asiento.aid">
-              <v-avatar>
-                <v-icon>check_circle</v-icon>
-              </v-avatar>
-              {{ asiento.descripcion }}: $ {{ asiento.precio }}
-            </v-chip>
-          </v-slide-y-transition>
-        </v-flex>
-        <v-layout justify-center mt-2>
-          <span class="subheading">Total: $ {{ totalSeleccionados.toLocaleString() }}</span>
+      <v-slide-y-transition mode="out-in">
+        <v-layout column justify-center text-xs-center my-3 v-if="seleccionados && seleccionados.length > 0">
+          <span class="subheading font-weight-bold">Tu Reserva</span>
+          <v-flex mt-3>
+            <v-slide-y-transition group hide-on-leave>
+              <v-chip @input="seleccionarAsiento(asiento)" :close="!asiento.cambiandoEstado" :color="asiento.cambiandoEstado ? '#D32F2F' : '#C0CA33'" text-color="white" v-for="asiento in seleccionados" :key="asiento.aid">
+                <v-avatar>
+                  <v-icon>check_circle</v-icon>
+                </v-avatar>
+                {{ asiento.descripcion }}: $ {{ asiento.precio }}
+              </v-chip>
+            </v-slide-y-transition>
+          </v-flex>
+          <v-layout justify-center mt-2>
+            <v-btn @click="pagar" color="secondary" class="subheading">Pagar Total: $ {{ totalSeleccionados.toLocaleString() }}</v-btn>
+          </v-layout>
         </v-layout>
-      </v-layout>
+      </v-slide-y-transition>
       <v-divider v-if="seleccionados && seleccionados.length > 0"></v-divider>
+      <v-slide-y-transition mode="out-in">
+        <v-layout column justify-center text-xs-center my-3 v-if="pagados && pagados.length > 0">
+          <span class="subheading">Compras Realizadas</span>
+          <v-flex mt-3>
+            <v-slide-y-transition group hide-on-leave>
+              <v-chip v-for="asiento in pagados" :key="asiento.aid" text-color="grey darken-1">
+                <v-avatar>
+                  <v-icon color="grey darken-1">monetization_on</v-icon>
+                </v-avatar>
+                {{ asiento.descripcion }}: $ {{ asiento.precio }}
+              </v-chip>
+            </v-slide-y-transition>
+          </v-flex>
+          <span class="subheading mt-2">Total: $ {{ totalPagado.toLocaleString() }}</span>
+        </v-layout>
+      </v-slide-y-transition>
+      <v-divider v-if="pagados && pagados.length > 0"></v-divider>
       <v-layout justify-center my-3>
         <v-card color="transparent" class="elevation-0">
           <v-layout justify-center class="escenario">
@@ -84,6 +103,8 @@ export default {
       asientos: null,
       seleccionados: [],
       totalSeleccionados: 0,
+      pagados: [],
+      totalPagado: 0,
       size: 27
     }
   },
@@ -205,6 +226,10 @@ export default {
               this.seleccionados.push(asiento)
               this.totalSeleccionados += asiento.precio
             }
+            else {
+              this.pagados.push(asiento)
+              this.totalPagado += asiento.precio
+            }
           }
           else {
             asiento.estado = 'ocupado'
@@ -276,6 +301,46 @@ export default {
         finally {
           asiento.cambiandoEstado = false
         }
+      }
+    },
+    async pagar() {
+      this.mostrarOcupado({ titulo: 'Efectuando la Compra', mensaje: 'Se está procesando tu pago...' })
+
+      let batch = db.batch()
+
+      let fecha = new Date()
+
+      this.seleccionados.forEach(asiento => {
+        batch.update(
+          db.collection('obras')
+            .doc(this.obra.oid)
+            .collection('presentaciones')
+            .doc(this.presentacion.pid)
+            .collection('reservas')
+            .doc(asiento.aid),
+            { estado: 'pagado', fecha }
+        )
+      })
+
+      try {
+        await batch.commit()
+
+        this.seleccionados.forEach(asiento => {
+          this.pagados.push(asiento)
+          this.totalPagado += asiento.precio
+          asiento.estado = 'pagado'
+        })
+
+        this.seleccionados = []
+        this.totalSeleccionados = 0
+
+        this.mostrarExito('Tu compra se ha efectuado con éxito. ¡Disfruta de la Obra!')
+      }
+      catch (error) {
+        this.mostrarError('Ocurrió un error efectuando el pago. Inténtalo nuevamente.')
+      }
+      finally {
+        this.ocultarOcupado()
       }
     },
     onResize() {
