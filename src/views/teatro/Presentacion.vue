@@ -37,8 +37,8 @@
       <v-layout column justify-center text-xs-center my-3 v-if="seleccionados && seleccionados.length > 0">
         <span class="subheading font-weight-bold">Tu Reserva</span>
         <v-flex mt-3>
-          <v-slide-y-transition group>
-            <v-chip :close="!asiento.cambiandoEstado" color='#C0CA33' text-color="white" v-for="asiento in seleccionados" :key="asiento.aid">
+          <v-slide-y-transition group hide-on-leave>
+            <v-chip @input="seleccionarAsiento(asiento)" :close="!asiento.cambiandoEstado" :color="asiento.cambiandoEstado ? '#D32F2F' : '#C0CA33'" text-color="white" v-for="asiento in seleccionados" :key="asiento.aid">
               <v-avatar>
                 <v-icon>check_circle</v-icon>
               </v-avatar>
@@ -251,6 +251,27 @@ export default {
         }
         catch (error) {
           this.mostrarError('Ocurrió un error efectuando la reserva. Inténtalo más tarde.')
+        }
+        finally {
+          asiento.cambiandoEstado = false
+        }
+      }
+      else {
+        try {
+          await db.collection('obras')
+                  .doc(this.obra.oid)
+                  .collection('presentaciones')
+                  .doc(this.presentacion.pid)
+                  .collection('reservas')
+                  .doc(asiento.aid)
+                  .delete()
+
+          asiento.estado = 'disponible'
+          this.seleccionados.splice(this.seleccionados.indexOf(asiento), 1)
+          this.totalSeleccionados -= asiento.precio
+        }
+        catch (error) {
+          this.mostrarError('Ocurrió un error eliminando la reserva.')
         }
         finally {
           asiento.cambiandoEstado = false
