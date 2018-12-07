@@ -205,40 +205,48 @@ export default {
         this.ocultarOcupado()
       }
     },
-    async consultarReservas() {
-      try {
-        let resultado = await db.collection('obras')
-                                .doc(this.obra.oid)
-                                .collection('presentaciones')
-                                .doc(this.presentacion.pid)
-                                .collection('reservas')
-                                .get()
+    consultarReservas() {      
+      db.collection('obras')
+        .doc(this.obra.oid)
+        .collection('presentaciones')
+        .doc(this.presentacion.pid)
+        .collection('reservas')
+        .onSnapshot(snapshot => {
+          snapshot.docChanges().forEach(change => { // added, modified, removed
+            let reserva = change.doc.data()
 
-        resultado.docs.forEach(doc => {
-          let reserva = doc.data()
+            let asiento = this.asientos.find(asiento => asiento.aid == reserva.rid)
 
-          let asiento = this.asientos.find(asiento => asiento.aid == reserva.rid)
+            if (change.type == 'added' || change.type == 'modified') {
+              if (reserva.usuario.uid == this.usuario.uid) {
+                asiento.estado = reserva.estado
 
-          if (reserva.usuario.uid == this.usuario.uid) {
-            asiento.estado = reserva.estado
-
-            if (asiento.estado == 'seleccionado') {
-              this.seleccionados.push(asiento)
-              this.totalSeleccionados += asiento.precio
+                if (asiento.estado == 'seleccionado') {
+                  this.seleccionados.push(asiento)
+                  this.totalSeleccionados += asiento.precio
+                }
+                else {
+                  this.pagados.push(asiento)
+                  this.totalPagado += asiento.precio
+                }
+              }
+              else {
+                asiento.estado = 'ocupado'
+              }
             }
             else {
-              this.pagados.push(asiento)
-              this.totalPagado += asiento.precio
+              asiento.estado = 'disponible'
+              
+              if (reserva.usuario.uid == this.usuario.uid) {
+                this.seleccionados.splice(this.seleccionados.indexOf(asiento), 1)
+                this.totalSeleccionados -= asiento.precio
+              }
             }
-          }
-          else {
-            asiento.estado = 'ocupado'
-          }
+          })
+        },
+        () => {
+          this.mostrarError('Ocurrió un error actualizando el estado de algunos asientos.')
         })
-      }
-      catch (error) {
-        this.mostrarError('Ocurrió un error consultando la disponibilidad de los asientos.')
-      }
     },
     async seleccionarAsiento(asiento) {
       if (asiento.estado == 'ocupado' || asiento.estado == 'pagado' || asiento.cambiandoEstado) {
@@ -269,10 +277,6 @@ export default {
                   .collection('reservas')
                   .doc(reserva.rid)
                   .set(reserva)
-
-          asiento.estado = 'seleccionado'
-          this.seleccionados.push(asiento)
-          this.totalSeleccionados += asiento.precio
         }
         catch (error) {
           this.mostrarError('Ocurrió un error efectuando la reserva. Inténtalo más tarde.')
@@ -290,10 +294,6 @@ export default {
                   .collection('reservas')
                   .doc(asiento.aid)
                   .delete()
-
-          asiento.estado = 'disponible'
-          this.seleccionados.splice(this.seleccionados.indexOf(asiento), 1)
-          this.totalSeleccionados -= asiento.precio
         }
         catch (error) {
           this.mostrarError('Ocurrió un error eliminando la reserva.')
@@ -324,12 +324,6 @@ export default {
 
       try {
         await batch.commit()
-
-        this.seleccionados.forEach(asiento => {
-          this.pagados.push(asiento)
-          this.totalPagado += asiento.precio
-          asiento.estado = 'pagado'
-        })
 
         this.seleccionados = []
         this.totalSeleccionados = 0

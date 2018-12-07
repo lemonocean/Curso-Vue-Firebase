@@ -68,7 +68,10 @@ const router = new Router({
     {
       path: '/:oid/:tid/:fecha',
       name: 'presentacion',
-      component: Presentacion
+      component: Presentacion,
+      meta: {
+        autenticado: true
+      }
     },
     {
       path: '/404',
