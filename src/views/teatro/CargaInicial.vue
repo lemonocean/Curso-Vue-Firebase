@@ -53,7 +53,7 @@ export default {
       const obraHamilton = {
         oid: 'hamilton',
         titulo: 'Hamilton',
-        portada: 'hamilton.png',
+        portada: 'https://firebasestorage.googleapis.com/v0/b/teatro-super-opera.appspot.com/o/obras%2Fhamilton%2Fhamilton.png?alt=media&token=323952e6-6656-4655-bb59-447929279bb5',
         descripcion: 'Hamilton: An American Musical es un musical sobre la vida de Alexander Hamilton, uno de los padres fundadores de los Estados Unidos; con letras, música y guion de Lin-Manuel Miranda.1​ El espectáculo, inspirado en la biografía de 2004 "Alexander Hamilton" del historiador Ron Chernow, ha logrado un gran éxito en crítica y taquilla.\n\nEl musical debutó en febrero del 2015 en el Teatro Público de Nueva York, hasta agosto del mismo año; cuando fue trasladado al teatro Richard Rodgers del circuito de Broadway, donde logró gran éxito en críticas y taquilla.\n\nEntre sus principales reconocimientos están haber ganado once premios Tony, un Grammy a mejor musical, un Pulitzer a mejor drama y siete premios Drama Desk.',
         categorias: [
           { categoria: 'A', precio: 850 },
@@ -68,7 +68,7 @@ export default {
       const obraElReyLeon = {
         oid: 'el-rey-leon',
         titulo: 'El Rey León',
-        portada: 'el-rey-leon.png',
+        portada: 'https://firebasestorage.googleapis.com/v0/b/teatro-super-opera.appspot.com/o/obras%2Fel-rey-leon%2Fel-rey-leon.png?alt=media&token=9dfd5ea3-81ed-4f5a-9b07-d081864a37ab',
         descripcion: 'El rey león es un musical basado en la película homónima de Disney de 1994, con libreto de Roger Allers e Irene Mecchi, canciones de Elton John y Tim Rice, y música adicional de Lebo M, Mark Mancina, Jay Rifkin, Julie Taymor y Hans Zimmer. Dirigido por Julie Taymor, el espectáculo está producido por Disney Theatrical y se caracteriza por el empleo de máscaras de animales y marionetas de gran tamaño para representar a los diferentes personajes.',
         categorias: [
           { categoria: 'A', precio: 400 },
@@ -83,7 +83,7 @@ export default {
       const obraFrozen = {
         oid: 'frozen',
         titulo: 'Frozen',
-        portada: 'frozen.png',
+        portada: 'https://firebasestorage.googleapis.com/v0/b/teatro-super-opera.appspot.com/o/obras%2Ffrozen%2Ffrozen.png?alt=media&token=37c81ae5-f7b4-40f9-b4ec-1793a54059f4',
         descripcion: 'Frozen is a musical with music and lyrics by Kristen Anderson-Lopez and Robert Lopez and book by Jennifer Lee based on the 2013 film of the same name. Produced by Disney Theatrical Productions, it had a tryout at the Buell Theatre in Denver, Colorado in August 2017 and premiered on Broadway in March 2018 at the St. James Theatre.',
         categorias: [
           { categoria: 'A', precio: 350 },
@@ -98,7 +98,7 @@ export default {
       const obraAnastasia = {
         oid: 'anastasia',
         titulo: 'Anastasia',
-        portada: 'anastasia.png',
+        portada: 'https://firebasestorage.googleapis.com/v0/b/teatro-super-opera.appspot.com/o/obras%2Fanastasia%2Fanastasia.png?alt=media&token=9a55afd3-99ca-4c9d-9440-4761e598089d',
         descripcion: 'Anastasia es un musical basado en la película de animación homónima de 1997, con libreto de Terrence McNally, música de Stephen Flaherty y letras de Lynn Ahrens. Su trama central gira en torno a la leyenda de la gran duquesa Anastasia Nikoláyevna de Rusia, quien supuestamente escapó de la ejecución de su familia a manos del ejército bolchevique.',
         categorias: [
           { categoria: 'A', precio: 350 },

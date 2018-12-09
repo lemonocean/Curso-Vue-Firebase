@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import sesion from './sesion'
-import teatro from './teatro'
 
 Vue.use(Vuex)
 
@@ -58,7 +57,6 @@ export default new Vuex.Store({
     
   },
   modules: {
-    sesion,
-    teatro
+    sesion
   }
 })

@@ -6,7 +6,7 @@
       <v-layout wrap align-center>
         <v-flex xs12 md6>
           <v-card class="ma-3">
-            <v-img :src="require(`@/assets/obras/${obra.portada}`)"></v-img>
+            <v-img :src="obra.portada"></v-img>
             <v-card-text class="subheading font-italic text-xs-justify">{{ obra.descripcion }}</v-card-text>
           </v-card>
         </v-flex>
