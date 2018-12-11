@@ -16,7 +16,13 @@
             {{ usuario.nombres + ' ' + usuario.apellidos }}
           </div>
         </v-layout>
-        <v-img class="ma-2 fotoPerfil" :src="usuario.fotoPerfil"></v-img>
+        <v-img class="ma-2 fotoPerfil" :src="usuario.fotoPerfil">
+          <v-layout fill-height align-end justify-end>
+            <v-btn v-if="editando" :to="{ name: 'edicion-foto-perfil' }" color="white" outline icon large>
+              <v-icon>edit</v-icon>
+            </v-btn>
+          </v-layout>
+        </v-img>
         <v-layout justify-center>
           <v-btn @click="editarDescripcion" v-if="editando" color="secondary" flat icon small>
             <v-icon>edit</v-icon>

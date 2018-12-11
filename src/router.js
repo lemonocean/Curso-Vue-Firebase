@@ -10,6 +10,7 @@ import EnvioVerificacionEmail from './views/usuario/EnvioVerificacionEmail.vue'
 import Login from './views/usuario/Login.vue'
 import Registro from './views/usuario/Registro.vue'
 import Perfil from './views/usuario/Perfil.vue'
+import EdicionFotoPerfil from './views/usuario/EdicionFotoPerfil.vue'
 
 import CargaInicial from './views/teatro/CargaInicial.vue'
 import Obra from './views/teatro/Obra.vue'
@@ -46,6 +47,14 @@ const router = new Router({
       path: '/sesion/acciones-email',
       name: 'acciones-email',
       component: AccionesEmail
+    },
+    {
+      path: '/sesion/edicion-foto-perfil',
+      name: 'edicion-foto-perfil',
+      component: EdicionFotoPerfil,
+      meta: {
+        autenticado: true
+      }
     },
     {
       path: '/usuario/:userName',

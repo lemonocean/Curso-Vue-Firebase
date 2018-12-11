@@ -72,6 +72,14 @@ export default {
 
       let vocal = state.usuario.sexo && state.usuario.sexo == 'F' ? 'a' : 'o'
       return `¡Bienvenid${vocal} ${state.usuario.nombres}!`
+    },
+    fotoPerfil (state) {
+      if (!state.usuario || !state.usuario.fotoPerfil) {
+        return require('@/assets/fotoUsuario.png')
+      }
+      else {
+        return state.usuario.fotoPerfil
+      }
     }
   }
 }
