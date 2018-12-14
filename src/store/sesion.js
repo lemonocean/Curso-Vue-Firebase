@@ -25,6 +25,11 @@ export default {
       if(!state.usuario) { return }
 
       state.usuario.biografia = biografia
+    },
+    actualizarFotoPerfil(state, fotoPerfil) {
+      if(!state.usuario) { return }
+
+      state.usuario.fotoPerfil = fotoPerfil
     }
   },
   actions: {

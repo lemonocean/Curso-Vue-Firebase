@@ -16,7 +16,7 @@
             {{ usuario.nombres + ' ' + usuario.apellidos }}
           </div>
         </v-layout>
-        <v-img class="ma-2 fotoPerfil" :src="usuario.fotoPerfil">
+        <v-img class="ma-2 fotoPerfil" :src="fotoPerfil">
           <v-layout fill-height align-end justify-end>
             <v-btn v-if="editando" :to="{ name: 'edicion-foto-perfil' }" color="white" outline icon large>
               <v-icon>edit</v-icon>
@@ -134,7 +134,7 @@
 <script>
 import { required, minLength, maxLength, url } from 'vuelidate/lib/validators'
 import { nombreCompuesto } from '@/utilidades/validaciones'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
 import { auth, db } from '@/firebase'
 
 export default {
@@ -313,6 +313,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('sesion', ['fotoPerfil']),
     perfilPropio() {
       return this.usuario && this.usuario.uid == auth.currentUser.uid
     },
