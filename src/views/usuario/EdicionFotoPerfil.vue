@@ -31,17 +31,46 @@
     </v-flex>
     <v-flex xs12 sm10 md8 lg6 xl4 mt-3>
       <v-card>
-        <v-toolbar color="primary" dark card>
-          <v-toolbar-title>
-            Cargar Imagen
-          </v-toolbar-title>        
-        </v-toolbar>
-        <v-card-text>
-          <file-pond v-if="vista == 1" @addfile="cargarImagen" instant-upload="false" fileValidateTypeLabelExpectedTypes="Se esperaba {allButLastType} o {lastType}" labelFileTypeNotAllowed="Agrega una imagen .png o .jpg" accepted-file-types="image/jpeg, image/png" label-idle="Selecciona o arrastra una imagen..."></file-pond>
-          <v-responsive v-if="vista == 2">
-            <img ref="imagenOriginal" src="" alt="" class="edicionImagen">
-          </v-responsive>
-        </v-card-text>
+        <v-tabs color="primary" dark icons-and-text>
+          <v-tab>
+            Subir Imagen
+            <v-icon>cloud_upload</v-icon>
+          </v-tab>
+          <v-tab-item>
+            <file-pond v-if="vista == 1" @addfile="cargarImagen" instant-upload="false" fileValidateTypeLabelExpectedTypes="Se esperaba {allButLastType} o {lastType}" labelFileTypeNotAllowed="Agrega una imagen .png o .jpg" accepted-file-types="image/jpeg, image/png" label-idle="Selecciona o arrastra una imagen..."></file-pond>
+            <v-responsive v-if="vista == 2">
+              <img ref="imagenOriginal" src="" alt="" class="edicionImagen">
+            </v-responsive>
+          </v-tab-item>
+          <v-tab v-if="fotosPerfil.length > 1">
+            Galería
+            <v-icon>photo_library</v-icon>
+          </v-tab>
+          <v-tab-item v-if="fotosPerfil.length > 1">
+            <v-layout wrap justify-start>
+              <v-flex xs6 sm4 lg3 v-for="foto in fotosPerfil" :key="foto.id">
+                <v-card class="ma-3">
+                  <v-card-text>
+                    <v-img :src="foto.url" alt="Foto Perfil"></v-img>
+                    <v-layout class="mt-3">
+                      <v-flex xs6>
+                        <v-layout justify-start>
+                          <v-icon v-if="foto.url == usuario.fotoPerfil" color="green" medium>check_circle</v-icon>
+                          <v-icon v-else color="grey" @click="seleccionarFotoPerfil(foto.url)" medium>check_circle_outline</v-icon>
+                        </v-layout>
+                      </v-flex>
+                      <v-flex xs6>
+                        <v-layout justify-end>
+                          <v-icon v-if="foto.url != usuario.fotoPerfil" medium>delete</v-icon>
+                        </v-layout>
+                      </v-flex>
+                    </v-layout>
+                  </v-card-text>
+                </v-card>
+              </v-flex>
+            </v-layout>
+          </v-tab-item>
+        </v-tabs>
       </v-card>
     </v-flex>
   </v-layout>
@@ -68,16 +97,42 @@ export default {
   data() {
     return {
       vista: 1,
-      cropper: null
+      cropper: null,
+      fotosPerfil: []
     }
   },
   computed: {
     ...mapState('sesion', ['usuario']),
     ...mapGetters('sesion', ['fotoPerfil'])
   },
+  created() {
+    this.consultarFotosPerfil()
+  },
   methods: {
     ...mapMutations(['mostrarError', 'mostrarOcupado', 'ocultarOcupado']),
     ...mapMutations('sesion', ['actualizarFotoPerfil']),
+    async consultarFotosPerfil() {
+
+      this.mostrarOcupado({ titulo: 'Consultando Galería', mensaje: 'Recuperando galería de imágenes...' })
+
+      try {
+        let resultado = await db.collection('usuarios')
+                                .doc(this.usuario.uid)
+                                .collection('fotos-perfil')
+                                .orderBy('fecha', 'desc')
+                                .get()
+
+        resultado.docs.forEach(doc => {
+          this.fotosPerfil.push(doc.data())
+        })
+      }
+      catch (error) {
+        this.mostrarError('Ocurrió un error recuperando tu galería de fotos.')
+      }
+      finally {
+        this.ocultarOcupado()
+      }
+    },
     cargarImagen (error, archivo) {
       if (error) {
         this.mostrarError('Ocurrió un error leyendo la imagen.')
@@ -129,6 +184,19 @@ export default {
 
         let url = await resultado.ref.getDownloadURL()
 
+        let fotoPerfil = {
+          fotoId,
+          fecha: new Date(),
+          url,
+          uid: this.usuario.uid
+        }
+
+        await db.collection('usuarios')
+                .doc(this.usuario.uid)
+                .collection('fotos-perfil')
+                .doc(fotoId)
+                .set(fotoPerfil)
+
         await db.collection('usuarios')
                 .doc(this.usuario.uid)
                 .update({ fotoPerfil: url })
@@ -139,6 +207,23 @@ export default {
       }
       catch (error) {
         this.mostrarError('Ocurrió un error almacenando la imagen.')
+      }
+      finally {
+        this.ocultarOcupado()
+      }
+    },
+    async seleccionarFotoPerfil(url) {
+      this.mostrarOcupado({ titulo: 'Actualizando Imagen', mensaje: 'Estableciendo foto de perfil...' })
+    
+      try {
+        await db.collection('usuarios')
+                .doc(this.usuario.uid)
+                .update({ fotoPerfil: url })
+
+        this.actualizarFotoPerfil(url)
+      }
+      catch (error) {
+        this.mostrarError('Ocurrió un error seleccionando la imagen.')
       }
       finally {
         this.ocultarOcupado()
