@@ -1,5 +1,5 @@
 <template>
-  <v-layout wrap justify-center align-start>
+  <v-layout wrap justify-center align-start align-content-start>
     <v-flex xs12>
       <v-layout justify-center>
         <v-card max-width="250">
@@ -10,8 +10,10 @@
             </v-toolbar-title>        
           </v-toolbar>
           <v-card-text>
-            <v-img v-if="vista == 1" :src="fotoPerfil" alt="Foto de Perfil"></v-img>
-            <div v-if="vista == 2" ref="vistaPrevia" class="vistaPrevia"></div>
+            <v-layout justify-center>
+              <v-img v-if="vista == 1" :src="fotoPerfil" alt="Foto de Perfil"></v-img>
+              <div v-if="vista == 2" ref="vistaPrevia" class="vistaPrevia"></div>
+            </v-layout>
           </v-card-text>
           <v-card-text>
             <v-layout v-if="vista == 1" justify-center>
@@ -61,7 +63,7 @@
                       </v-flex>
                       <v-flex xs6>
                         <v-layout justify-end>
-                          <v-icon v-if="foto.url != usuario.fotoPerfil" medium>delete</v-icon>
+                          <v-icon v-if="foto.url != usuario.fotoPerfil" medium @click="preguntarEliminarImagen(foto)">delete</v-icon>
                         </v-layout>
                       </v-flex>
                     </v-layout>
@@ -69,6 +71,15 @@
                 </v-card>
               </v-flex>
             </v-layout>
+            <v-dialog v-model="preguntaEliminar" max-width="400" persistent>
+              <v-card>
+                <v-card-text class="title">
+                  La foto se eliminará permanentemente, ¿Deseas Continuar?
+                </v-card-text>
+                <v-btn color="secondary" flat @click="preguntaEliminar = false">Cancelar</v-btn>
+                <v-btn flat @click="eliminarImagen">Eliminar</v-btn>
+              </v-card>
+            </v-dialog>
           </v-tab-item>
         </v-tabs>
       </v-card>
@@ -98,7 +109,9 @@ export default {
     return {
       vista: 1,
       cropper: null,
-      fotosPerfil: []
+      fotosPerfil: [],
+      preguntaEliminar: false,
+      fotoEliminar: null
     }
   },
   computed: {
@@ -224,6 +237,37 @@ export default {
       }
       catch (error) {
         this.mostrarError('Ocurrió un error seleccionando la imagen.')
+      }
+      finally {
+        this.ocultarOcupado()
+      }
+    },
+    preguntarEliminarImagen (foto) {
+      this.fotoEliminar = foto
+      this.preguntaEliminar = true
+    },
+    async eliminarImagen () {
+      this.preguntaEliminar = false
+
+      this.mostrarOcupado({ titulo: 'Eliminando Imagen', mensaje: 'Se está eliminando tu imagen...' })
+
+      try {
+        await db.collection('usuarios')
+                .doc(this.usuario.uid)
+                .collection('fotos-perfil')
+                .doc(this.fotoEliminar.fotoId)
+                .delete()
+
+        await storage.ref().child(`usuarios/${this.usuario.uid}/fotos-perfil/${this.fotoEliminar.fotoId}.jpg`)
+                           .delete()
+
+        console.log(`usuarios/${this.usuario.uid}/fotos-perfil/${this.fotoEliminar.fotoId}.jpg`)
+
+        let index = this.fotosPerfil.indexOf(this.fotoEliminar)
+        this.fotosPerfil.splice(index, 1)
+      }
+      catch (error) {        
+        this.mostrarError('Ocurrió un error eliminando la imagen.')
       }
       finally {
         this.ocultarOcupado()
