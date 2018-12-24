@@ -255,6 +255,8 @@ export default {
 
       asiento.cambiandoEstado = true
 
+      let batch = db.batch()
+
       if (asiento.estado == 'disponible') {
         let reserva = {
           rid: asiento.aid,
@@ -269,14 +271,34 @@ export default {
           estado: 'seleccionado'
         }
 
+        let reservaUsuario = {
+          id: this.presentacion.pid + '-' + asiento.aid,
+          rid: asiento.aid,
+          x: asiento.x,
+          y: asiento.y,
+          fecha: new Date(),
+          estado: 'seleccionado',
+          presentacion: this.presentacion
+        }
+
+        batch.set(
+          db.collection('obras')
+            .doc(this.obra.oid)
+            .collection('presentaciones')
+            .doc(this.presentacion.pid)
+            .collection('reservas')
+            .doc(reserva.rid), reserva
+        )
+
+        batch.set(
+          db.collection('usuarios')
+            .doc(this.usuario.uid)
+            .collection('reservas')
+            .doc(reservaUsuario.id), reservaUsuario
+        )
+
         try {
-          await db.collection('obras')
-                  .doc(this.obra.oid)
-                  .collection('presentaciones')
-                  .doc(this.presentacion.pid)
-                  .collection('reservas')
-                  .doc(reserva.rid)
-                  .set(reserva)
+          await batch.commit()
         }
         catch (error) {
           this.mostrarError('Ocurrió un error efectuando la reserva. Inténtalo más tarde.')
@@ -286,14 +308,25 @@ export default {
         }
       }
       else {
+
+        batch.delete(
+          db.collection('obras')
+            .doc(this.obra.oid)
+            .collection('presentaciones')
+            .doc(this.presentacion.pid)
+            .collection('reservas')
+            .doc(asiento.aid)
+        )
+
+        batch.delete(
+          db.collection('usuarios')
+            .doc(this.usuario.uid)
+            .collection('reservas')
+            .doc(this.presentacion.pid + '-' + asiento.aid)
+        )
+
         try {
-          await db.collection('obras')
-                  .doc(this.obra.oid)
-                  .collection('presentaciones')
-                  .doc(this.presentacion.pid)
-                  .collection('reservas')
-                  .doc(asiento.aid)
-                  .delete()
+          await batch.commit()
         }
         catch (error) {
           this.mostrarError('Ocurrió un error eliminando la reserva.')
@@ -318,6 +351,14 @@ export default {
             .doc(this.presentacion.pid)
             .collection('reservas')
             .doc(asiento.aid),
+            { estado: 'pagado', fecha }
+        )
+
+        batch.update(
+          db.collection('usuarios')
+            .doc(this.usuario.uid)
+            .collection('reservas')
+            .doc(this.presentacion.pid + '-' + asiento.aid),
             { estado: 'pagado', fecha }
         )
       })
