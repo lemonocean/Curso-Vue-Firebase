@@ -241,6 +241,9 @@ export default {
 
         this.actualizarNombresApellidos({ nombres: this.f2.nombres, apellidos: this.f2.apellidos })
 
+        this.usuario.nombres = this.f2.nombres
+        this.usuario.apellidos = this.f2.apellidos
+
         this.editandoNombresApellidos = false
         this.editando = false
       }
@@ -270,6 +273,8 @@ export default {
 
         this.actualizarDescripcion(this.edicionDescripcion)
 
+        this.usuario.descripcion = this.edicionDescripcion
+
         this.editandoDescripcion = false
         this.editando = false
       }
@@ -298,6 +303,8 @@ export default {
                 .update({ biografia: this.edicionBiografia })
 
         this.actualizarBiografia(this.edicionBiografia)
+
+        this.usuario.biografia = this.edicionBiografia
 
         this.editandoBiografia = false
         this.editando = false
