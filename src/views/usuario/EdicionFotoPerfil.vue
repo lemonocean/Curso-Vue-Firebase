@@ -89,7 +89,7 @@
 
 <script>
 
-import { db, storage } from '@/firebase'
+import { db, storage, auth, functions } from '@/firebase'
 import { mapState, mapGetters, mapMutations } from 'vuex'
 
 import vueFilePond from 'vue-filepond'
@@ -192,31 +192,36 @@ export default {
       try {
         let ref = storage.ref()
 
-        let resultado = await ref.child(`usuarios/${this.usuario.uid}/fotos-perfil/${fotoId}.jpg`)
-                                 .putString(imagen, 'data_url')
+        await ref.child(`usuarios/${this.usuario.uid}/fotos-perfil/${fotoId}.jpg`)
+                 .putString(imagen, 'data_url')
 
-        let url = await resultado.ref.getDownloadURL()
+        let generarMiniaturas = functions.httpsCallable('generarMiniaturas')
+        let idToken = await auth.currentUser.getIdToken(true)
 
-        let fotoPerfil = {
-          fotoId,
-          fecha: new Date(),
-          url,
-          uid: this.usuario.uid
+        if (await generarMiniaturas({ idToken, fotoId })) {
+          let fotoPerfil = {
+            fotoId,
+            fecha: new Date(),
+            uid: this.usuario.uid
+          }
+
+          await db.collection('usuarios')
+                  .doc(this.usuario.uid)
+                  .collection('fotos-perfil')
+                  .doc(fotoId)
+                  .set(fotoPerfil)
+
+          await db.collection('usuarios')
+                  .doc(this.usuario.uid)
+                  .update({ fotoPerfil: fotoId })
+
+          this.actualizarFotoPerfil(fotoId)
+
+          this.$router.push({ name: 'perfil', params: { userName: this.usuario.userName } })
         }
-
-        await db.collection('usuarios')
-                .doc(this.usuario.uid)
-                .collection('fotos-perfil')
-                .doc(fotoId)
-                .set(fotoPerfil)
-
-        await db.collection('usuarios')
-                .doc(this.usuario.uid)
-                .update({ fotoPerfil: url })
-
-        this.actualizarFotoPerfil(url)
-
-        this.$router.push({ name: 'perfil', params: { userName: this.usuario.userName } })
+        else {
+          this.mostrarError('Ocurrió un error almacenando la imagen.')
+        }
       }
       catch (error) {
         this.mostrarError('Ocurrió un error almacenando la imagen.')
@@ -258,11 +263,18 @@ export default {
                 .doc(this.fotoEliminar.fotoId)
                 .delete()
 
-        await storage.ref().child(`usuarios/${this.usuario.uid}/fotos-perfil/${this.fotoEliminar.fotoId}.jpg`)
+        let dimensiones = [512, 256, 128, 64, 32]
+
+        let promises = dimensiones.map(async dimension => {
+          let ancho = dimension
+          let alto = dimension
+
+          await storage.ref().child(`usuarios/${this.usuario.uid}/fotos-perfil/${this.fotoEliminar.fotoId}-${ancho}x${alto}.jpg`)
                            .delete()
+        })
 
-        console.log(`usuarios/${this.usuario.uid}/fotos-perfil/${this.fotoEliminar.fotoId}.jpg`)
-
+        await Promise.all(promises)
+        
         let index = this.fotosPerfil.indexOf(this.fotoEliminar)
         this.fotosPerfil.splice(index, 1)
       }
