@@ -11,7 +11,7 @@
           </v-toolbar>
           <v-card-text>
             <v-layout justify-center>
-              <v-img v-if="vista == 1" :src="fotoPerfil" alt="Foto de Perfil"></v-img>
+              <v-img v-if="vista == 1" :src="usuario.fotoPerfil256" alt="Foto de Perfil"></v-img>
               <div v-if="vista == 2" ref="vistaPrevia" class="vistaPrevia"></div>
             </v-layout>
           </v-card-text>
@@ -115,8 +115,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('sesion', ['usuario']),
-    ...mapGetters('sesion', ['fotoPerfil'])
+    ...mapState('sesion', ['usuario'])
   },
   created() {
     this.consultarFotosPerfil()

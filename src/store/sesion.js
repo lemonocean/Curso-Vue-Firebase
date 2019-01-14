@@ -1,4 +1,4 @@
-import { auth, db } from '@/firebase'
+import { auth, db, storage } from '@/firebase'
 import router from '@/router'
 
 export default {
@@ -41,6 +41,29 @@ export default {
 
         if(doc.exists) {
           let usuario = doc.data()
+
+          if (usuario.fotoPerfil) {
+            let ref = storage.ref()
+            let uid = usuario.uid
+            let fotoPerfil = usuario.fotoPerfil
+            let urlBase = `usuarios/${uid}/fotos-perfil/${fotoPerfil}-`
+            
+            ref.child(urlBase + '32x32.jpg').getDownloadURL().then(url => { usuario.fotoPerfil32 = url })
+            ref.child(urlBase + '64x64.jpg').getDownloadURL().then(url => { usuario.fotoPerfil64 = url })
+            ref.child(urlBase + '128x128.jpg').getDownloadURL().then(url => { usuario.fotoPerfil128 = url })
+            ref.child(urlBase + '256x256.jpg').getDownloadURL().then(url => { usuario.fotoPerfil256 = url })
+            ref.child(urlBase + '512x512.jpg').getDownloadURL().then(url => { usuario.fotoPerfil512 = url })
+          }
+          else {
+            let fotoUsuario = require('@/assets/fotoUsuario.png')
+
+            usuario.fotoPerfil32 = fotoUsuario
+            usuario.fotoPerfil64 = fotoUsuario
+            usuario.fotoPerfil128 = fotoUsuario
+            usuario.fotoPerfil256 = fotoUsuario
+            usuario.fotoPerfil512 = fotoUsuario
+          }
+
           commit('actualizarUsuario', usuario)
 
           switch(router.currentRoute.name) {
