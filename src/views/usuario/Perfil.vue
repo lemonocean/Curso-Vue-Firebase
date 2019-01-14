@@ -16,7 +16,7 @@
             {{ usuario.nombres + ' ' + usuario.apellidos }}
           </div>
         </v-layout>
-        <v-img class="ma-2 fotoPerfil" :src="fotoPerfil">
+        <v-img v-if="fotoPerfil" class="ma-2 fotoPerfil" :src="fotoPerfil">
           <v-layout fill-height align-end justify-end>
             <v-btn v-if="editando" :to="{ name: 'edicion-foto-perfil' }" color="white" outline icon large>
               <v-icon>edit</v-icon>
@@ -135,7 +135,7 @@
 import { required, minLength, maxLength, url } from 'vuelidate/lib/validators'
 import { nombreCompuesto } from '@/utilidades/validaciones'
 import { mapMutations, mapGetters } from 'vuex'
-import { auth, db } from '@/firebase'
+import { auth, db, storage } from '@/firebase'
 
 export default {
   data() {
@@ -150,7 +150,8 @@ export default {
       editandoDescripcion: false,
       edicionDescripcion: '',
       editandoBiografia: false,
-      edicionBiografia: ''
+      edicionBiografia: '',
+      fotoPerfil: null
     }
   },
   validations: {
@@ -205,6 +206,21 @@ export default {
 
           if(usuarioDoc.exists) {
             this.usuario = usuarioDoc.data()
+
+            if (this.usuario.fotoPerfil) {
+              let uid = this.usuario.uid
+              let fotoPerfil = this.usuario.fotoPerfil
+
+              storage.ref()
+                     .child(`usuarios/${uid}/fotos-perfil/${fotoPerfil}-256x256.jpg`)
+                     .getDownloadURL()
+                     .then(url => {
+                       this.fotoPerfil = url
+                     })
+            }
+            else {
+              this.fotoPerfil = require('@/assets/fotoUsuario.png')
+            }
           }
           else {
             this.$router.push({ name: '404' })
