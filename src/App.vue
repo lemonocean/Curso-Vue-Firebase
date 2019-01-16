@@ -43,7 +43,12 @@
       </v-toolbar-title>   
       <v-spacer></v-spacer>  
       <router-link v-if="usuario" class="nombre" :to="{ name: 'perfil', params: { userName: usuario.userName } }">
-        <span>{{ usuario.nombres }}</span> 
+        <v-layout align-center>
+          <v-avatar size="32" class="mr-2">
+            <v-img :src="usuario.fotoPerfil32"></v-img>
+          </v-avatar>
+          <span>{{ usuario.nombres }}</span> 
+        </v-layout>
       </router-link>
     </v-toolbar>
 
