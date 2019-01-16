@@ -57,13 +57,13 @@
                     <v-layout class="mt-3">
                       <v-flex xs6>
                         <v-layout justify-start>
-                          <v-icon v-if="foto.url == usuario.fotoPerfil" color="green" medium>check_circle</v-icon>
-                          <v-icon v-else color="grey" @click="seleccionarFotoPerfil(foto.url)" medium>check_circle_outline</v-icon>
+                          <v-icon v-if="foto.fotoId == usuario.fotoPerfil" color="green" medium>check_circle</v-icon>
+                          <v-icon v-else color="grey" @click="seleccionarFotoPerfil(foto.fotoId)" medium>check_circle_outline</v-icon>
                         </v-layout>
                       </v-flex>
                       <v-flex xs6>
                         <v-layout justify-end>
-                          <v-icon v-if="foto.url != usuario.fotoPerfil" medium @click="preguntarEliminarImagen(foto)">delete</v-icon>
+                          <v-icon v-if="foto.fotoId != usuario.fotoPerfil" medium @click="preguntarEliminarImagen(foto)">delete</v-icon>
                         </v-layout>
                       </v-flex>
                     </v-layout>
@@ -90,7 +90,7 @@
 <script>
 
 import { db, storage, auth, functions } from '@/firebase'
-import { mapState, mapGetters, mapMutations } from 'vuex'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 
 import vueFilePond from 'vue-filepond'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
@@ -122,7 +122,7 @@ export default {
   },
   methods: {
     ...mapMutations(['mostrarError', 'mostrarOcupado', 'ocultarOcupado']),
-    ...mapMutations('sesion', ['actualizarFotoPerfil']),
+    ...mapActions('sesion', ['actualizarFotoPerfil']),
     async consultarFotosPerfil() {
 
       this.mostrarOcupado({ titulo: 'Consultando Galería', mensaje: 'Recuperando galería de imágenes...' })
@@ -135,7 +135,21 @@ export default {
                                 .get()
 
         resultado.docs.forEach(doc => {
-          this.fotosPerfil.push(doc.data())
+          let fotoPerfil = doc.data()
+          fotoPerfil.url = ''
+
+          this.fotosPerfil.push(fotoPerfil)
+        })
+
+        let ref = storage.ref()
+        let uid = this.usuario.uid
+
+        this.fotosPerfil.forEach(fotoPerfil => {
+          ref.child(`usuarios/${uid}/fotos-perfil/${fotoPerfil.fotoId}-256x256.jpg`)
+             .getDownloadURL()
+             .then(url => {
+               fotoPerfil.url = url
+             })
         })
       }
       catch (error) {
@@ -229,15 +243,15 @@ export default {
         this.ocultarOcupado()
       }
     },
-    async seleccionarFotoPerfil(url) {
+    async seleccionarFotoPerfil(fotoId) {
       this.mostrarOcupado({ titulo: 'Actualizando Imagen', mensaje: 'Estableciendo foto de perfil...' })
     
       try {
         await db.collection('usuarios')
                 .doc(this.usuario.uid)
-                .update({ fotoPerfil: url })
+                .update({ fotoPerfil: fotoId })
 
-        this.actualizarFotoPerfil(url)
+        this.actualizarFotoPerfil(fotoId)
       }
       catch (error) {
         this.mostrarError('Ocurrió un error seleccionando la imagen.')

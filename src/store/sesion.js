@@ -1,6 +1,8 @@
 import { auth, db, storage } from '@/firebase'
 import router from '@/router'
 
+const dimensiones = [512, 256, 128, 64, 32]
+
 export default {
   namespaced: true,
   state: {
@@ -30,9 +32,48 @@ export default {
       if(!state.usuario) { return }
 
       state.usuario.fotoPerfil = fotoPerfil
+    },
+    actualizarFotoPerfilDimension(state, payload) {
+      if (!state.usuario) { return }
+
+      switch (payload.dimension) {
+        case 32:
+          state.usuario.fotoPerfil32 = payload.url
+          break
+
+        case 64:
+          state.usuario.fotoPerfil64 = payload.url
+          break
+
+        case 128:
+          state.usuario.fotoPerfil128 = payload.url
+          break
+
+        case 256:
+          state.usuario.fotoPerfil256 = payload.url
+          break
+
+        case 512:
+          state.usuario.fotoPerfil512 = payload.url
+          break
+      }
     }
   },
   actions: {
+    actualizarFotoPerfil({ state, commit }, fotoPerfil) {
+      commit('actualizarFotoPerfil', fotoPerfil)
+
+      let ref = storage.ref()
+      let uid = state.usuario.uid
+
+      dimensiones.forEach(dimension => {
+        ref.child(`usuarios/${uid}/fotos-perfil/${fotoPerfil}-${dimension}x${dimension}.jpg`)
+           .getDownloadURL()
+           .then(url => {
+             commit('actualizarFotoPerfilDimension', { dimension, url })
+           })
+      })
+    },
     async iniciarSesion({ commit, getters }, uid) {
       try {
         let doc = await db.collection('usuarios')
@@ -42,26 +83,26 @@ export default {
         if(doc.exists) {
           let usuario = doc.data()
 
+          let fotoUsuario = require('@/assets/fotoUsuario.png')
+
+          usuario.fotoPerfil32 = fotoUsuario
+          usuario.fotoPerfil64 = fotoUsuario
+          usuario.fotoPerfil128 = fotoUsuario
+          usuario.fotoPerfil256 = fotoUsuario
+          usuario.fotoPerfil512 = fotoUsuario
+
           if (usuario.fotoPerfil) {
             let ref = storage.ref()
             let uid = usuario.uid
             let fotoPerfil = usuario.fotoPerfil
-            let urlBase = `usuarios/${uid}/fotos-perfil/${fotoPerfil}-`
             
-            ref.child(urlBase + '32x32.jpg').getDownloadURL().then(url => { usuario.fotoPerfil32 = url })
-            ref.child(urlBase + '64x64.jpg').getDownloadURL().then(url => { usuario.fotoPerfil64 = url })
-            ref.child(urlBase + '128x128.jpg').getDownloadURL().then(url => { usuario.fotoPerfil128 = url })
-            ref.child(urlBase + '256x256.jpg').getDownloadURL().then(url => { usuario.fotoPerfil256 = url })
-            ref.child(urlBase + '512x512.jpg').getDownloadURL().then(url => { usuario.fotoPerfil512 = url })
-          }
-          else {
-            let fotoUsuario = require('@/assets/fotoUsuario.png')
-
-            usuario.fotoPerfil32 = fotoUsuario
-            usuario.fotoPerfil64 = fotoUsuario
-            usuario.fotoPerfil128 = fotoUsuario
-            usuario.fotoPerfil256 = fotoUsuario
-            usuario.fotoPerfil512 = fotoUsuario
+            dimensiones.forEach(dimension => {
+              ref.child(`usuarios/${uid}/fotos-perfil/${fotoPerfil}-${dimension}x${dimension}.jpg`)
+                .getDownloadURL()
+                .then(url => {
+                  commit('actualizarFotoPerfilDimension', { dimension, url })
+                })
+            })
           }
 
           commit('actualizarUsuario', usuario)

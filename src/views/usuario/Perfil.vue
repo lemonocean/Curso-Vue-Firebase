@@ -336,7 +336,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('sesion', ['fotoPerfil']),
     perfilPropio() {
       return this.usuario && this.usuario.uid == auth.currentUser.uid
     },
