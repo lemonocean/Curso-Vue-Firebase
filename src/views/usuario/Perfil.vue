@@ -134,7 +134,7 @@
 <script>
 import { required, minLength, maxLength, url } from 'vuelidate/lib/validators'
 import { nombreCompuesto } from '@/utilidades/validaciones'
-import { mapMutations, mapGetters } from 'vuex'
+import { mapMutations } from 'vuex'
 import { auth, db, storage } from '@/firebase'
 
 export default {
@@ -231,6 +231,7 @@ export default {
         }
       }
       catch (error) {
+        console.log(error)
         this.$router.push({ name: '404' })
       }
       finally {
