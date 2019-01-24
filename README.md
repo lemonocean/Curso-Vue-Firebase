@@ -1,26 +1,18 @@
-# vue-firebase
+# Curso de Vue js y Firebase en Español
 
-## Project setup
+## Descripción
+
+Este repositorio está asociado a un curso en Udemy sobre Vue.js y Firebase.
+Puedes visitarlo aquí: (próximamente)
+
+## Términos de Uso
+
+Puedes utilizar este código para fines gratuitos o comerciales.
+Se agradece cualquier crédito que quieras adicionar dentro de la aplicación, de la siguiente forma:
+
+Por Jorge Bustamante - Lemon Ocean (Url próximamente) al lado o vinculada al texto.
+
+### Para instalar el proyecto, ejecutar:
 ```
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
 ```
