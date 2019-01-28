@@ -3,7 +3,7 @@
 ## Descripción
 
 Este repositorio está asociado a un curso en Udemy sobre Vue.js y Firebase.
-Puedes visitarlo aquí: (próximamente)
+Puedes visitarlo aquí: https://www.udemy.com/vue-firebase/?couponCode=LEMONOCEAN
 
 ## Términos de Uso
 
